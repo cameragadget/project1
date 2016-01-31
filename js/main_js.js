@@ -14,7 +14,16 @@ var gameBoard = {
   rowHeight: 42,
 }
 
-
+    var Tile = function(x, y, type, shift) {
+        this.x = x;
+        this.y = y;
+        this.type = type;
+        this.removed = false;
+        this.shift = shift;
+        this.velocity = 0;
+        this.alpha = 1;
+        this.processed = false;
+}
 
 
 var ball1 = new Image();
@@ -43,7 +52,8 @@ var testArray = [
 ]
 
 
-
+   //** this is almost fixed... but is probably all going to change
+   //when i have to integrate this into tile type...
 // this creates a game board, but does not enter pieces or coordinates
 // into the scoring array. I will need to revisit this when I complete
 // the scoring array and functionality to integrate.  this is
@@ -53,7 +63,7 @@ var x = canvas.width;
 var y = canvas.height;
 var height = 50;
 var width = 50;
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 12; i++) {
     if (i < 1) {
       var yPos = (height*i);
     } else {
@@ -61,13 +71,18 @@ var width = 50;
     }
       for(var j=0; j < 10; j++){
         if (i%2 === 0) {
-          ctx.drawImage(testArray[i][j],(width)*j, yPos, width, height);
-        //ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],(width)*j, yPos, width, height);
+          // ctx.drawImage(testArray[i][j],(width)*j, yPos, width, height);
+        ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],(width)*j, yPos, width, height);
       } else {
-        ctx.drawImage(testArray[i][j],((width)*j)+(width/2), yPos, width, height);
+        ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],((width)*j)+(width/2), yPos, width, height);
       }
 }
 }
 }
+
+//// at page launch, we have to fill the board with empty tiles as
+//// placeholders
+
+
 
 
