@@ -12,18 +12,15 @@ var gameBoard = {
   tileheight: 50,
   tiles: [],
   rowHeight: 42,
-}
+};
 
-    var Tile = function(x, y, type, shift) {
-        this.x = x;
-        this.y = y;
-        this.type = type;
-        this.removed = false;
-        this.shift = shift;
-        this.velocity = 0;
-        this.alpha = 1;
-        this.processed = false;
-}
+var Tile = function(x, y, type) {
+  this.x = x;
+  this.y = y;
+  this.type = type;
+  this.velocity = 0;
+  this.alpha = 1;
+};
 
 
 var ball1 = new Image();
@@ -83,6 +80,13 @@ var width = 50;
 //// at page launch, we have to fill the board with empty tiles as
 //// placeholders
 
+// trying to get the code to work independent of the UI...
 
-
+var makeTileBoard = function() {
+ for (var i=0; i < gameBoard.rows; i++) {
+   for (var j=0; j < gameBoard.columns; j++) {
+    gameBoard.tiles[i][j].push("-1");
+}
+}
+}
 
