@@ -30,15 +30,15 @@ var x = canvas.width;
 var y = canvas.height;
 var height = 50;
 var width = 50;
-
   for (var i = 0; i < 5; i++) {
-    var yPos = width*i;
-
+    var yPos = (height*i);
       for(var j=0; j < 10; j++){
-
-    ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],(width)*j, yPos, width, height);
+        if (i%2 === 0) {
+        ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],(width)*j, yPos, width, height);
+      } else {
+        ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],((width)*j)+(width/2), yPos, width, height);
+      }
 }
-
 }
 }
 
