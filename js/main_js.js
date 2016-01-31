@@ -2,7 +2,7 @@ console.log("main_js loaded")
 
 
 
-  var canvas = document.getElementById('playfield');
+  var canvas = document.getElementById('mainCanvas');
     var ctx = canvas.getContext('2d');
 
 
@@ -22,31 +22,72 @@ var ballArray = [ball1, ball2, ball3, ball4, ball5];
 
 var tileball = ballArray[Math.floor(Math.random()*ballArray.length)];
 
+var randomBall = ballArray[Math.floor(Math.random()*ballArray.length)];
 
-
-var x = 0;
-var y = 0;
-var dx = 0;
-var dy = 0;
-var WIDTH;
-var HEIGHT;
-
-var ctx = document.getElementById("playfield").getContext("2d");
-ctx.drawImage(tileball, 64, 64);
-ctx.fill();
-
-function init() {
-    var ctx = document.getElementById("playfield").getContext("2d");
-
-    return setInterval(draw, 10);
-}
 
 function draw() {
-    ctx.drawImage(tileball, x, y, 64, 64);
-    ctx.fill();
-    x += dx;
-    y += dy;
+var x = canvas.width;
+var y = canvas.height;
+var height = 50;
+var width = 50;
+
+  for (var i = 0; i < 5; i++) {
+    var yPos = width*i;
+
+      for(var j=0; j < 10; j++){
+
+    ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],(width)*j, yPos, width, height);
+}
+
+}
 }
 
 
-init();
+// function createLevel() {
+//   var x = 0;
+//   var y = 0;
+//   var height = 50;
+//   var width = 50;
+//           // for (var j=0; j<6; j++) {
+//             for (var i=0; i<10; i++) {
+//               ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)], x, y, height, width);
+//               x += 50;
+//               // y += 50;
+
+//             }
+//             // }
+// };
+
+
+
+
+
+
+
+
+
+
+
+
+// var x = 0;
+// var y = 0;
+// var dx = 0;
+// var dy = 0;
+// var WIDTH;
+// var HEIGHT;
+// var ctx = document.getElementById("mainCanvas").getContext("2d");
+// ctx.drawImage(tileball, 64, 64);
+// ctx.fill();
+// function init() {
+//     var ctx = document.getElementById("mainCanvas").getContext("2d");
+//     return setInterval(draw, 10);
+// }
+// function draw() {
+//     ctx.drawImage(tileball, x, y, 64, 64);
+//     ctx.fill();
+//     x += dx;
+//     y += dy;
+// }
+// }
+// }
+// init();
