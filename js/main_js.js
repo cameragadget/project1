@@ -7,7 +7,7 @@ var gameBoard = {
   x: 525,
   y: 700,
   columns: 10,
-  rows: 10,
+  rows: 13,
   tilewidth: 50,
   tileheight: 50,
   tiles: [],
@@ -37,14 +37,6 @@ ball4.src='assets/images/4.png';
 var ballArray = [ball0, ball1, ball2, ball3, ball4];
 
 var randomBall = ballArray[Math.floor(Math.random()*ballArray.length)];
-
-
-   //** this is almost fixed... but is probably all going to change
-   //when i have to integrate this into tile type...
-// this creates a game board, but does not enter pieces or coordinates
-// into the scoring array. I will need to revisit this when I complete
-// the scoring array and functionality to integrate.  this is
-// simply proof of concept.
 
 //this function fills the gameBoard.tiles array with player pieces
 //and blank tiles.
@@ -87,7 +79,78 @@ var width = 50;
         }
     }
   }
+  //bottom rectangle is size of gameboard not taken up by
+  //rows and columns
+
+ctx.fillStyle="#FF0000";
+ctx.fillRect(0,550,525,146);
+
+
 }
+
+// now we have to make a player piece
+
+var player = {
+  x: 0,
+  y: 0,
+  tiletype: -1,
+}
+
+var makePlayerBall = function() {
+  // assign player a ball type randomly
+  player.tiletype = Math.floor(Math.random()*ballArray.length);
+  ctx.drawImage(ballArray[player.tiletype], (gameBoard.x/2)-gameBoard.tilewidth/2 , 554 - (gameBoard.tileheight/2), gameBoard.tilewidth, gameBoard.tileheight);
+
+}
+
+//this is going to be all of the functionality of shooting,
+
+//stop the ball when it intersects with another ball
+
+// make the moving ball bounce off the walls and continue moving
+
+//snapping the ball to the grid,
+
+//incorporating the ball into the grid coordinates to make it a tile
+
+//now that the ball is a tile, we can start running the match
+//functionality to find clusters:
+
+//the ball can be touching up to six different tiles:
+
+var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
+var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
+
+// var findMatch = function {}
+  //somehow we need to be able to identify the array coodinates
+  //of the playerBall even though we have incorporated it already
+
+  //is playerball in an even or odd row?
+
+  // now that we know even or odd we run the RowTouching array against
+  //it's neighbors to see if tile.type matches playerball
+
+  // if tiletype doesn't match playerball we mark as
+// checked: true
+// matched: false
+
+// if tiletype matches playerball we have to mark it as matched
+//(and put it into a new array of matches?)
+
+// now that it's in a new array we have to run the same neighbor
+// function on this new tile.
+// do any of it's neighbors match playerball tiletype?
+// if they do they go into the array as well.
+
+// once all tiles in this array have been checked and no more matches
+// have been found we check the array length.
+
+// if length >= 3, the tile type is changed to -1 and they vanish
+// (eventualy animations and score will be added (ice box))
+
+// eventually need to then figure out how to recognize tiles that
+// are now hanging free and make those vanish as well...
+
 
 
 
