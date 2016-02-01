@@ -71,19 +71,20 @@ var x = canvas.width;
 var y = canvas.height;
 var height = 50;
 var width = 50;
-  for (var i = 0; i < 5; i++) {
+  for (var i = 0; i < 10; i++) {
     if (i < 1) {
       var yPos = (height*i);
     } else {
       yPos = (gameBoard.rowHeight*i);
     }
       for(var j=0; j < 10; j++){
-        if (i%2 === 0) {
-          // ctx.drawImage(testArray[i][j],(width)*j, yPos, width, height);
-        ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],(width)*j, yPos, width, height);
-      } else {
-        ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],((width)*j)+(width/2), yPos, width, height);
-      }
+        if (gameBoard.tiles[i][j].type !== -1) {
+          if (i%2 === 0) {
+          ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],(width)*j, yPos, width, height);
+          } else {
+          ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],((width)*j)+(width/2), yPos, width, height);
+          }
+        }
     }
   }
 }
