@@ -1,4 +1,4 @@
-console.log("main_js loaded")
+console.log("main_js loaded");
 
 var canvas = document.getElementById('mainCanvas');
 var ctx = canvas.getContext('2d');
@@ -23,30 +23,20 @@ var Tile = function(x, y, type) {
 };
 
 
+var ball0 = new Image();
+ball0.src='assets/images/0.png';
 var ball1 = new Image();
-ball1.src='assets/images/moj1.png';
+ball1.src='assets/images/1.png';
 var ball2 = new Image();
-ball2.src='assets/images/moj2.png';
+ball2.src='assets/images/2.png';
 var ball3 = new Image();
-ball3.src='assets/images/moj3.png';
+ball3.src='assets/images/3.png';
 var ball4 = new Image();
-ball4.src='assets/images/moj4.png';
-var ball5 = new Image();
-ball5.src='assets/images/moj5.png';
+ball4.src='assets/images/4.png';
 
-var ballArray = [ball1, ball2, ball3, ball4, ball5];
-
-var tileball = ballArray[Math.floor(Math.random()*ballArray.length)];
+var ballArray = [ball0, ball1, ball2, ball3, ball4];
 
 var randomBall = ballArray[Math.floor(Math.random()*ballArray.length)];
-
-var testArray = [
-[ball1, ball2, ball2, ball5, ball5, ball5, ball2, ball3, ball3, ball1],
-[ball2, ball2, ball4, ball5, ball5, ball5, ball2, ball3, ball3, ball1],
-[ball3, ball3, ball3, ball5, ball5, ball5, ball2, ball3, ball3, ball1],
-[ball4, ball4, ball4, ball4, ball5, ball5, ball2, ball3, ball3, ball1],
-[ball5, ball5, ball5, ball5, ball5, ball4, ball2, ball3, ball3, ball1]
-]
 
 
    //** this is almost fixed... but is probably all going to change
@@ -55,12 +45,33 @@ var testArray = [
 // into the scoring array. I will need to revisit this when I complete
 // the scoring array and functionality to integrate.  this is
 // simply proof of concept.
+
+//this function fills the gameBoard.tiles array with player pieces
+//and blank tiles.
+
+var makeGameBoard = function() {
+  for (var i=0; i < gameBoard.rows; i++) {
+    gameBoard.tiles[i] = [];
+      if (i < 5) {
+        for (var j=0; j < gameBoard.columns; j++) {
+          gameBoard.tiles[i][j] = new Tile(i, j, Math.floor(Math.random()*ballArray.length));
+        };
+      } else {
+        for (var j=0; j < gameBoard.columns; j++) {
+          gameBoard.tiles[i][j] = new Tile(i, j, -1);
+        };
+      };
+  };
+};
+
+//this function then draws those tiles out.
+
 function draw() {
 var x = canvas.width;
 var y = canvas.height;
 var height = 50;
 var width = 50;
-  for (var i = 0; i < 12; i++) {
+  for (var i = 0; i < 5; i++) {
     if (i < 1) {
       var yPos = (height*i);
     } else {
@@ -69,24 +80,16 @@ var width = 50;
       for(var j=0; j < 10; j++){
         if (i%2 === 0) {
           // ctx.drawImage(testArray[i][j],(width)*j, yPos, width, height);
-        ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],(width)*j, yPos, width, height);
+        ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],(width)*j, yPos, width, height);
       } else {
-        ctx.drawImage(ballArray[Math.floor(Math.random()*ballArray.length)],((width)*j)+(width/2), yPos, width, height);
+        ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],((width)*j)+(width/2), yPos, width, height);
       }
-}
-}
+    }
+  }
 }
 
-//// at page launch, we have to fill the board with empty tiles as
-//// placeholders
 
-// trying to get the code to work independent of the UI...
 
-var makeTileBoard = function() {
- for (var i=0; i < gameBoard.rows; i++) {
-   for (var j=0; j < gameBoard.columns; j++) {
-    gameBoard.tiles[i][j].push("-1");
-}
-}
-}
+
+
 
