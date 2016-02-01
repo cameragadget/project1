@@ -18,8 +18,8 @@ var Tile = function(x, y, type) {
   this.x = x;
   this.y = y;
   this.type = type;
-  this.velocity = 0;
-  this.alpha = 1;
+  this.checked = false;
+  this.matched = false;
 };
 
 
@@ -121,11 +121,30 @@ var makePlayerBall = function() {
 var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
 var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 
-// var findMatch = function {}
+
   //somehow we need to be able to identify the array coodinates
   //of the playerBall even though we have incorporated it already
 
-  //is playerball in an even or odd row?
+var cluster = [];
+var findMatch = function((x, y, type) {
+  if x % 2 === 0 {
+    for (k = 0, k < evenRowTouching.length; k++) {
+      if gameBoard.tiles[x + evenRowsTouching[k][0]]
+                     [y + evenRowsTouching[k][1]].type
+                      = player.tiletype {
+          gameBoard.tiles[x][y].checked = true;
+          gameBoard.tiles[x][y].matched = true;
+          cluster.push(gameBoard.tiles[x][y]);
+
+
+                      }
+
+
+    }
+  }
+
+
+  //is tile in an even or odd row?
 
   // now that we know even or odd we run the RowTouching array against
   //it's neighbors to see if tile.type matches playerball
