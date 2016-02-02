@@ -135,9 +135,11 @@ function findMatch(trow, tcol) {
       var calcrow = trow + touching[k][0];
       var calccol = tcol + touching[k][1];
       var funtile = gameBoard.tiles[calcrow][calccol];
+      if ((calcrow < 10) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
       if ((funtile.type === player.tiletype) && (funtile.checked === false)) {
           funtile.matched = true;
           cluster.push(funtile);
+      }
       }
     }
   recluster(cluster);
