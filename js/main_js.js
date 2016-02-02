@@ -6,17 +6,17 @@ var ctx = canvas.getContext('2d');
 var gameBoard = {
   x: 525,
   y: 700,
-  columns: 10,
   rows: 13,
+  columns: 10,
   tilewidth: 50,
   tileheight: 50,
   tiles: [],
   rowHeight: 42,
 };
 
-var Tile = function(x, y, type) {
-  this.x = x;
-  this.y = y;
+var Tile = function(row, col, type) {
+  this.row = row;
+  this.col = col;
   this.type = type;
   this.checked = false;
   this.matched = false;
@@ -63,7 +63,7 @@ var x = canvas.width;
 var y = canvas.height;
 var height = 50;
 var width = 50;
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < gameBoard.rows; i++) {
     if (i < 1) {
       var yPos = (height*i);
     } else {
@@ -81,18 +81,15 @@ var width = 50;
   }
   //bottom rectangle is size of gameboard not taken up by
   //rows and columns
-
 ctx.fillStyle="#FF0000";
 ctx.fillRect(0,550,525,146);
-
-
 }
 
 // now we have to make a player piece
 
 var player = {
-  x: 0,
-  y: 0,
+  row: 0,
+  col: 0,
   tiletype: -1,
 }
 
@@ -100,7 +97,6 @@ var makePlayerBall = function() {
   // assign player a ball type randomly
   player.tiletype = Math.floor(Math.random()*ballArray.length);
   ctx.drawImage(ballArray[player.tiletype], (gameBoard.x/2)-gameBoard.tilewidth/2 , 554 - (gameBoard.tileheight/2), gameBoard.tilewidth, gameBoard.tileheight);
-
 }
 
 //this is going to be all of the functionality of shooting,
@@ -121,27 +117,35 @@ var makePlayerBall = function() {
 var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
 var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 
-
   //somehow we need to be able to identify the array coodinates
   //of the playerBall even though we have incorporated it already
 
+// var cluster = [];
+// var findMatch = function(trow, tcol) {
+//   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
+//     for (k = 0; k < touching.length; k++) {
+//       if (gameBoard.tiles[trow + touching[k][0]][tcol + touching[k][1]].type
+//                         = player.tiletype) {
+//           gameBoard.tiles[row][col].checked = true;
+//           gameBoard.tiles[row][col].matched = true;
+//           cluster.push(gameBoard.tiles[row][col]);
+//       }
+//     }
+//   };
+
 var cluster = [];
-var findMatch = function((x, y, type) {
-  if x % 2 === 0 {
-    for (k = 0, k < evenRowTouching.length; k++) {
-      if gameBoard.tiles[x + evenRowsTouching[k][0]]
-                     [y + evenRowsTouching[k][1]].type
-                      = player.tiletype {
-          gameBoard.tiles[x][y].checked = true;
-          gameBoard.tiles[x][y].matched = true;
-          cluster.push(gameBoard.tiles[x][y]);
-
-
-                      }
-
-
+var findMatch = function(trow, tcol) {
+  var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
+    for (k = 0; k < touching.length; k++) {
+      var funtile = gameBoard.tiles[trow + touching[k][0]][tcol + touching[k][1]];
+      if (funtile.type === player.tiletype) {
+          funtile.checked = true;
+          funtile.matched = true;
+          cluster.push(funtile);
+      }
     }
-  }
+  };
+
 
 
   //is tile in an even or odd row?
