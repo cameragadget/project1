@@ -124,38 +124,27 @@ var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
   //somehow we need to be able to identify the array coodinates
   //of the playerBall even though we have incorporated it already
 
-// var cluster = [];
-// var findMatch = function(trow, tcol) {
-//   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
-//     for (k = 0; k < touching.length; k++) {
-//       if (gameBoard.tiles[trow + touching[k][0]][tcol + touching[k][1]].type
-//                         = player.tiletype) {
-//           gameBoard.tiles[row][col].checked = true;
-//           gameBoard.tiles[row][col].matched = true;
-//           cluster.push(gameBoard.tiles[row][col]);
-//       }
-//     }
-//   };
-
-
 // need to add parameters for 10 and -1
+// funtile[x][y]
+// if funtile[-1 < x < 10][-1 < y < 10]
 
 var cluster = [];
 function findMatch(trow, tcol) {
   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
     for (k = 0; k < touching.length; k++) {
-      var funtile = gameBoard.tiles[trow + touching[k][0]][tcol + touching[k][1]];
+      var calcrow = trow + touching[k][0];
+      var calccol = tcol + touching[k][1];
+      var funtile = gameBoard.tiles[calcrow][calccol];
       if ((funtile.type === player.tiletype) && (funtile.checked === false)) {
           funtile.matched = true;
           cluster.push(funtile);
       }
     }
-    recluster(cluster);
-  };
+  recluster(cluster);
+};
 
 // now we need to run findMatch on the contents of cluster
 
-// funtile.checked = true;
 var clusterSize = 0
 function recluster(cluster) {
   console.log(cluster);
@@ -163,13 +152,12 @@ function recluster(cluster) {
     if (cluster[i].checked === false) {
       cluster[i].checked = true;
       findMatch(cluster[i].row, cluster[i].col);
-
-    }
-    else {
+    } else {
       return;
     }
   }
 };
+
 
 
 
