@@ -1,5 +1,8 @@
 console.log("main_js loaded");
 
+
+
+
 var canvas = document.getElementById('mainCanvas');
 var ctx = canvas.getContext('2d');
 
@@ -98,12 +101,19 @@ var player = {
   y: 0,
   row: 0,
   col: 0,
+  angle: 0,
+  speed: 0,
   tiletype: -1,
 }
 
 var makePlayerBall = function() {
   // assign player a ball type randomly
   player.tiletype = Math.floor(Math.random()*ballArray.length);
+  player.x = (gameBoard.x/2)-gameBoard.tilewidth/2;
+  player.y = (580 - (gameBoard.tileheight/2));
+}
+
+var drawPlayerBall = function() {
   ctx.drawImage(ballArray[player.tiletype], (gameBoard.x/2)-gameBoard.tilewidth/2 , 580 - (gameBoard.tileheight/2), gameBoard.tilewidth, gameBoard.tileheight);
 }
 
@@ -134,6 +144,7 @@ var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 
 var cluster = [];
 function findMatch(trow, tcol) {
+
   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
     for (k = 0; k < touching.length; k++) {
       var calcrow = trow + touching[k][0];
@@ -173,13 +184,8 @@ function foundMatch() {
   }
 };
 
-function clear() {
-var canvas = document.getElementById('mainCanvas');
-var ctx = canvas.getContext('2d');
-ctx.clearRect(0, 0, 525, 700);
-}
-
 function eliminateCluster() {
+  foundMatch();
   if (clusterFound = true) {
     for (var i = 0; i < cluster.length; i++){
     gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
@@ -188,8 +194,14 @@ function eliminateCluster() {
   }
   clear();
   reUp();
+  cluster = [];
 }
 
+function clear() {
+var canvas = document.getElementById('mainCanvas');
+var ctx = canvas.getContext('2d');
+ctx.clearRect(0, 0, 525, 700);
+}
 
 function reUp() {
   drawGame();
@@ -197,16 +209,65 @@ function reUp() {
   makePlayerBall();
 }
 
-
 function setUp() {
+  clear()
   makeGameBoard();
   drawGame();
   drawTiles();
   makePlayerBall();
 };
 
+function radToDeg(angle) {
+    return angle * (180 / Math.PI);
+}
 
 
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+  }
+  canvas.addEventListener('mousemove', function(evt) {
+  var mousePos = getMousePos(canvas, evt);
+  console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
+  var mouseangle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
+  if (mouseangle < 0) {
+      mouseangle = 180 + (180 + mouseangle);
+    }
+    player.angle = mouseangle;
+    renderMouseAngle();
+}, false);
+
+
+
+function degToRad(angle) {
+    return angle * (Math.PI / 180);
+}
+
+function renderMouseAngle() {
+    var centerx = player.x + gameBoard.tilewidth/2;
+    var centery = player.y + gameBoard.tileheight/2;
+
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = "#0000ff";
+    ctx.beginPath();
+    ctx.moveTo(centerx, centery);
+    ctx.lineTo(centerx + 1.5*gameBoard.tilewidth * Math.cos(degToRad(player.angle)),
+               centery - 1.5*gameBoard.tileheight * Math.sin(degToRad(player.angle)));
+    ctx.stroke();
+}
+
+
+
+  setInterval(function() {
+    clear()
+    drawGame()
+    drawTiles()
+    renderMouseAngle()
+    drawPlayerBall();
+  }, 30);
 
 
   //is tile in an even or odd row?
