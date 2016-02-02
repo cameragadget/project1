@@ -23,6 +23,7 @@ var Tile = function(row, col, type) {
   this.type = type;
   this.checked = false;
   this.matched = false;
+  this.alpha = 1;
 };
 
 var ball0 = new Image();
@@ -60,7 +61,7 @@ var makeGameBoard = function() {
 
 //this function then draws those tiles out.
 
-function draw() {
+function drawTiles() {
 var x = canvas.width;
 var y = canvas.height;
 var height = 50;
@@ -81,7 +82,10 @@ var width = 50;
         }
     }
   }
-  //bottom rectangle is size of gameboard not taken up by
+}
+
+function drawGame() {
+    //bottom rectangle is size of gameboard not taken up by
   //rows and columns
 ctx.fillStyle="#FF0000";
 ctx.fillRect(0,550,525,146);
@@ -135,12 +139,12 @@ function findMatch(trow, tcol) {
       var calcrow = trow + touching[k][0];
       var calccol = tcol + touching[k][1];
       var funtile = gameBoard.tiles[calcrow][calccol];
-      if ((calcrow < 10) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-      if ((funtile.type === player.tiletype) && (funtile.checked === false)) {
-          funtile.matched = true;
-          cluster.push(funtile);
-      }
-      }
+        if ((calcrow < 10) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+          if ((funtile.type === player.tiletype) && (funtile.checked === false)) {
+            funtile.matched = true;
+            cluster.push(funtile);
+          }
+        }
     }
   recluster(cluster);
 };
@@ -160,6 +164,46 @@ function recluster(cluster) {
   }
 };
 
+var clusterFound = false;
+
+function foundMatch() {
+  if (cluster.length >= 2) {
+    console.log("cluster found");
+    clusterFound = true;
+  }
+};
+
+function clear() {
+var canvas = document.getElementById('mainCanvas');
+var ctx = canvas.getContext('2d');
+ctx.clearRect(0, 0, 525, 700);
+}
+
+function eliminateCluster() {
+  if (clusterFound = true) {
+    for (var i = 0; i < cluster.length; i++){
+    gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
+    gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
+    }
+  }
+  clear();
+  reUp();
+}
+
+
+function reUp() {
+  drawGame();
+  drawTiles();
+  makePlayerBall();
+}
+
+
+function setUp() {
+  makeGameBoard();
+  drawGame();
+  drawTiles();
+  makePlayerBall();
+};
 
 
 
