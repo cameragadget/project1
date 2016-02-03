@@ -1,21 +1,13 @@
-
 console.log("main_js loaded");
-
 
 document.addEventListener('DOMContentLoaded', function() {
     setUp();
 }, false);
 
-
-
 var moving;
-
 
 var canvas = document.getElementById('mainCanvas');
 var ctx = canvas.getContext('2d');
-
-// canvas.addEventListener("mousemove", onMouseMove);
-// canvas.addEventListener("click", onClick);
 
 var gameBoard = {
   x: 525,
@@ -93,15 +85,13 @@ var width = 50;
           ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],((width)*j)+(width/2), yPos, width, height);
           }
         }
-    }
+      }
   }
 }
 
 var drawGame = function() {
-    //bottom rectangle is size of gameboard not taken up by
-  //rows and columns
-ctx.fillStyle="#FF0000";
-ctx.fillRect(0,550,525,146);
+  ctx.fillStyle="#FF0000";
+  ctx.fillRect(0,550,525,146);
 }
 
 // now we have to make a player piece
@@ -117,12 +107,14 @@ var player = {
           col: 0,
           angle: 0,
           speed: 0,
+          radius: 25,
           tiletype: -1,
-        },
+         },
 };
 
-var makePlayerBall = function() {
   // assign player a ball type randomly
+
+var makePlayerBall = function() {
   player.tiletype = Math.floor(Math.random()*ballArray.length);
   player.x = (gameBoard.x/2)-gameBoard.tilewidth/2;
   player.y = (580 - (gameBoard.tileheight/2));
@@ -168,8 +160,8 @@ function findMatch(trow, tcol) {
           }
         }
     }
-  recluster(cluster);
-};
+    recluster(cluster);
+} ;
 
 // now we need to run findMatch on the contents of cluster
 
@@ -238,15 +230,16 @@ function getMousePos(canvas, evt) {
     return {
       x: evt.clientX - rect.left,
       y: evt.clientY - rect.top
-    };
   }
-  canvas.addEventListener('mousemove', function(evt) {
+}
+
+canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
   console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
   var mouseangle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
   if (mouseangle < 0) {
       mouseangle = 180 + (180 + mouseangle);
-    }
+  }
     player.angle = mouseangle;
     renderMouseAngle();
 }, false);
@@ -272,11 +265,12 @@ function movePlayer() {
         var dx = player.emoji.speed * Math.cos(degToRad(player.emoji.angle));
         var dy = player.emoji.speed * -1*Math.sin(degToRad(player.emoji.angle));
         var moveInterval = setInterval(function(){
-  if (!moving){
-    clearInterval(moveInterval);
-  }
-  drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
-}, 5);
+          if (!moving){
+          clearInterval(moveInterval);
+          }
+          drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
+          detectCollision();
+        }, 5);
         moveInterval;
 };
 
@@ -311,27 +305,61 @@ setInterval(function() {
     drawTiles();
     renderMouseAngle();
     drawPlayerBall();
-  }, 40);
+}, 40);
+
 
 
 // //// work area///
-
-// function findCoordinate(column, row {
-//   var tilex = gameBoard.x = column x level.tilewidth;
-//    if
-// })
-
-// // collision detection:
-
-// for (var i = 0; i < gameBoard.width; i++){
-//   for (var j = 0; j < gameBoard.length; i++){
-//     var collisionTile = gameBoard.tiles[i][j];
-//     if (collisionTile.type >= 0) {
+// var collisionTile.x;
+// var collisionTile.y;
+// var collisionTile;
 
 
-//     }
-//   }
-// }
+// var getCoordinates() = function((i, j) {
+//             if (i === 0) {
+//             collisionTile.x = i * gameBoard.tileheight + gameBoard.tileheight/2;
+//             collisionTile.y = j * gameboard.tilewidth + gameBoard.tilewidth/2;
+//           } else if (i % 2 === 0) {
+//             collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+//           } else {
+//             collisionTile.x = i * gameBoard.rowheight + gameBoard.rowheight/2;
+//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth;
+//           }
+// });
+
+
+var detectCollision = function() {
+  // if (moving === true) {
+    for (var i = 0; i < gameBoard.rows; i++){
+      for (var j = 0; j < gameBoard.columns; j++){
+        var collisionTile = gameBoard.tiles[i][j];
+            if (i === 0) {
+            collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+            collisionTile.y = i * gameBoard.tileheight + gameBoard.tileheight/2;
+            } else if (i % 2 === 0) {
+            collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+            collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+            } else {
+            collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth;
+            collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+            }
+            var dx = collisionTile.x - player.emoji.x;
+            var dy = collisionTile.y - player.emoji.y;
+            var distance = Math.sqrt(dx * dx + dy * dy);
+              if (collisionTile.type >= 0) {
+                if (distance < gameBoard.radius + player.emoji.radius) {
+                  console.log("collision detected!");
+                  console.log(player.emoji.x, player.emoji.y);
+                  console.log(collisionTile);
+                  moving = false;
+                }
+              }
+      }
+    }
+  // }
+};
+
 
 
 
