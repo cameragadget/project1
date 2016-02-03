@@ -29,6 +29,8 @@ var Tile = function(row, col, type) {
   this.matched = false;
   this.alpha = 1;
   radius = 25;
+  x = 0;
+  y = 0;
 };
 
 var ball0 = new Image();
@@ -329,36 +331,74 @@ setInterval(function() {
 // });
 
 
+
+
+var distance;
+
+var collisionTile;
 var detectCollision = function() {
   // if (moving === true) {
     for (var i = 0; i < gameBoard.rows; i++){
       for (var j = 0; j < gameBoard.columns; j++){
-        var collisionTile = gameBoard.tiles[i][j];
-            if (i === 0) {
-            collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
-            collisionTile.y = i * gameBoard.tileheight + gameBoard.tileheight/2;
-            } else if (i % 2 === 0) {
-            collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
-            collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+            if (i % 2 === 0) {
+            gameBoard.tiles[i][j].x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+            gameBoard.tiles[i][j].y = i * gameBoard.rowHeight + gameBoard.rowHeight/2;
             } else {
-            collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth;
-            collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+            gameBoard.tiles[i][j].x = j * gameBoard.tilewidth + gameBoard.tilewidth;
+            gameBoard.tiles[i][j].y = i * gameBoard.rowHeight + gameBoard.rowHeight/2;
             }
-            var dx = collisionTile.x - player.emoji.x;
-            var dy = collisionTile.y - player.emoji.y;
-            var distance = Math.sqrt(dx * dx + dy * dy);
-              if (collisionTile.type >= 0) {
+            var dx = gameBoard.tiles[i][j].x - player.emoji.x;
+            var dy = gameBoard.tiles[i][j].y - player.emoji.y;
+            distance = Math.sqrt(dx * dx + dy * dy);
+              if (gameBoard.tiles[i][j].type >= 0) {
                 if (distance < gameBoard.radius + player.emoji.radius) {
                   console.log("collision detected!");
                   console.log(player.emoji.x, player.emoji.y);
-                  console.log(collisionTile);
+                  console.log(gameBoard.tiles[i][j]);
                   moving = false;
                 }
               }
       }
     }
-  // }
+
 };
+
+var closestTileCoordinate = function(x, y) {
+  var yToRow = ((y + 25 / 42)+4)
+
+}
+
+// var collisionTile;
+// var detectCollision = function() {
+//   // if (moving === true) {
+//     for (var i = 0; i < gameBoard.rows; i++){
+//       for (var j = 0; j < gameBoard.columns; j++){
+//         var collisionTile = gameBoard.tiles[i][j];
+//             if (i === 0) {
+//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+//             collisionTile.y = i * gameBoard.tileheight + gameBoard.tileheight/2;
+//             } else if (i % 2 === 0) {
+//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+//             collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+//             } else {
+//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth;
+//             collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
+//             }
+//             var dx = collisionTile.x - player.emoji.x;
+//             var dy = collisionTile.y - player.emoji.y;
+//             var distance = Math.sqrt(dx * dx + dy * dy);
+//               if (collisionTile.type >= 0) {
+//                 if (distance < gameBoard.radius + player.emoji.radius) {
+//                   console.log("collision detected!");
+//                   console.log(player.emoji.x, player.emoji.y);
+//                   console.log(collisionTile);
+//                   moving = false;
+//                 }
+//               }
+//       }
+//     }
+//   // }
+// };
 
 
 
