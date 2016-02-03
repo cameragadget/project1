@@ -1,8 +1,11 @@
+
 console.log("main_js loaded");
+
 
 document.addEventListener('DOMContentLoaded', function() {
     setUp();
 }, false);
+
 
 
 
@@ -22,6 +25,7 @@ var gameBoard = {
   tileheight: 50,
   tiles: [],
   rowHeight: 42,
+  radius: 25,
 };
 
 var Tile = function(row, col, type) {
@@ -252,23 +256,29 @@ canvas.addEventListener('click', function() {
 
 
 
-// function movePlayer() {
-//         player.emoji.x = player.x;
-//         player.emoji.y = player.y;
-//         player.emoji.angle = player.angle;
-//         player.emoji.tiletype = player.tiletype;
-//         player.emoji.speed = 3;
-//         player.emoji.x += player.emoji.speed * Math.cos(degToRad(player.angle));
-//         player.emoji.y += player.emoji.speed * -1*Math.sin(degToRad(player.angle));
-// };
+moving = false
+function movePlayer() {
+    var drawPlayerEmoji = function(px, py) {
+      ctx.drawImage(ballArray[player.emoji.tiletype], px , py, gameBoard.tilewidth, gameBoard.tileheight);
+    }
+        player.emoji.x = player.x;
+        player.emoji.y = player.y;
+        player.emoji.angle = player.angle;
+        player.emoji.tiletype = player.tiletype;
+        player.emoji.speed = .05;
+        var dx = player.emoji.speed * Math.cos(degToRad(player.emoji.angle));
+        var dy = player.emoji.speed * -1*Math.sin(degToRad(player.emoji.angle));
+        setInterval(function() {
+    for (var i = 0; i < 20; i++) {
+      moving = true
+      drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
+    }
+}, 5);
+};
 
-// var drawPlayerEmoji = function() {
-// ctx.drawImage(ballArray[player.emoji.tiletype], player.emoji.x , player.emoji.y, gameBoard.tilewidth, gameBoard.tileheight);
-// }
 
-// setInterval(function() {
-//     drawPlayerEmoji();
-// }, 30);
+
+
 
 
 
@@ -292,13 +302,7 @@ function renderMouseAngle() {
 }
 
 
-  setInterval(function() {
-    clear();
-    drawGame();
-    drawTiles();
-    renderMouseAngle();
-    drawPlayerBall();
-  }, 10);
+
 
 
 
@@ -330,8 +334,13 @@ function renderMouseAngle() {
 // are now hanging free and make those vanish as well...
 
 
-
-
+setInterval(function() {
+    clear();
+    drawGame();
+    drawTiles();
+    renderMouseAngle();
+    drawPlayerBall();
+  }, 40);
 
 
 
