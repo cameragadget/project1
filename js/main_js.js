@@ -1,5 +1,9 @@
 console.log("main_js loaded");
 
+document.addEventListener('DOMContentLoaded', function() {
+    setUp();
+}, false);
+
 
 
 
@@ -87,7 +91,7 @@ var width = 50;
   }
 }
 
-function drawGame() {
+var drawGame = function() {
     //bottom rectangle is size of gameboard not taken up by
   //rows and columns
 ctx.fillStyle="#FF0000";
@@ -99,12 +103,17 @@ ctx.fillRect(0,550,525,146);
 var player = {
   x: 0,
   y: 0,
-  row: 0,
-  col: 0,
   angle: 0,
-  speed: 0,
   tiletype: -1,
-}
+  emoji: {x: 0,
+          y: 0,
+          row: 0,
+          col: 0,
+          angle: 0,
+          speed: 0,
+          tiletype: -1,
+        },
+};
 
 var makePlayerBall = function() {
   // assign player a ball type randomly
@@ -137,10 +146,6 @@ var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 
   //somehow we need to be able to identify the array coodinates
   //of the playerBall even though we have incorporated it already
-
-// need to add parameters for 10 and -1
-// funtile[x][y]
-// if funtile[-1 < x < 10][-1 < y < 10]
 
 var cluster = [];
 function findMatch(trow, tcol) {
@@ -211,8 +216,8 @@ function reUp() {
 
 function setUp() {
   clear()
-  makeGameBoard();
   drawGame();
+  makeGameBoard();
   drawTiles();
   makePlayerBall();
 };
@@ -240,6 +245,33 @@ function getMousePos(canvas, evt) {
     renderMouseAngle();
 }, false);
 
+canvas.addEventListener('click', function() {
+  console.log("clicked");
+  movePlayer();
+}, false);
+
+
+
+// function movePlayer() {
+//         player.emoji.x = player.x;
+//         player.emoji.y = player.y;
+//         player.emoji.angle = player.angle;
+//         player.emoji.tiletype = player.tiletype;
+//         player.emoji.speed = 3;
+//         player.emoji.x += player.emoji.speed * Math.cos(degToRad(player.angle));
+//         player.emoji.y += player.emoji.speed * -1*Math.sin(degToRad(player.angle));
+// };
+
+// var drawPlayerEmoji = function() {
+// ctx.drawImage(ballArray[player.emoji.tiletype], player.emoji.x , player.emoji.y, gameBoard.tilewidth, gameBoard.tileheight);
+// }
+
+// setInterval(function() {
+//     drawPlayerEmoji();
+// }, 30);
+
+
+
 
 
 function degToRad(angle) {
@@ -260,14 +292,15 @@ function renderMouseAngle() {
 }
 
 
-
   setInterval(function() {
-    clear()
-    drawGame()
-    drawTiles()
-    renderMouseAngle()
+    clear();
+    drawGame();
+    drawTiles();
+    renderMouseAngle();
     drawPlayerBall();
-  }, 30);
+  }, 10);
+
+
 
 
   //is tile in an even or odd row?
