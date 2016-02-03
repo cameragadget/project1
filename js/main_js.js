@@ -109,7 +109,7 @@ var player = {
           col: 0,
           angle: 0,
           speed: 0,
-          radius: 25,
+          radius: 20,
           tiletype: -1,
          },
 };
@@ -145,40 +145,78 @@ var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
 var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 
   //somehow we need to be able to identify the array coodinates
-  //of the playerBall even though we have incorporated it already
+  //of the playerBall eve
+// even though we have incorporated it already
 
+var toCheck= [];
 var cluster = [];
-function findMatch(trow, tcol) {
+var numberChecked = 0;
 
-  var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
-    for (k = 0; k < touching.length; k++) {
-      var calcrow = trow + touching[k][0];
-      var calccol = tcol + touching[k][1];
-      var funtile = gameBoard.tiles[calcrow][calccol];
-        if ((calcrow < 10) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-          if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
-            funtile.matched = true;
-            cluster.push(funtile);
-          }
+var findMatch = function() {
+  while(toCheck.length > 0) {
+    for (var i = 0; i < toCheck.length; i++) {
+      var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
+        for (k = 0; k < touching.length; k++) {
+          var calcrow = toCheck[i].row + touching[k][0];
+          var calccol = toCheck[i].col + touching[k][1];
+          var functile = gameBoard.tiles[calcrow][calccol];
+            if (functile.checked !== true) {
+            if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+              if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
+                functile.matched = true;
+                functile.checked = true;
+                toCheck.push(functile);
+                numberChecked++;
+                cluster.push(toCheck[i]);
+              } else {
+                functile.checked = true;
+              }
+            }
+            }
         }
-    }
-    recluster(cluster);
-} ;
-
-// now we need to run findMatch on the contents of cluster
-
-var clusterSize = 0
-function recluster(cluster) {
-  console.log(cluster);
-  for (var i = 0; i < cluster.length; i++) {
-    if (cluster[i].checked === false) {
-      cluster[i].checked = true;
-      findMatch(cluster[i].row, cluster[i].col);
-    } else {
-      return;
     }
   }
 };
+
+
+
+
+
+
+
+// var cluster = [];
+
+// function findMatch(trow, tcol) {
+
+//   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
+//     for (k = 0; k < touching.length; k++) {
+//       var calcrow = trow + touching[k][0];
+//       var calccol = tcol + touching[k][1];
+//       var funtile = gameBoard.tiles[calcrow][calccol];
+//         if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+//           if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
+//             funtile.matched = true;
+//             cluster.push(funtile);
+//           }
+//         }
+//     }
+//     recluster(cluster);
+// };
+
+// // now we need to run findMatch on the contents of cluster
+
+// var clusterSize = 0
+// function recluster(cluster) {
+//   console.log(cluster);
+//   for (var i = 0; i < cluster.length; i++) {
+//     if (cluster[i].checked === false) {
+//       cluster[i].checked = true;
+//       findMatch(cluster[i].row, cluster[i].col);
+//     } else {
+//       return;
+//     }
+//   }
+// };
 
 var clusterFound = false;
 
@@ -259,7 +297,8 @@ canvas.addEventListener('click', function() {
 
 function movePlayer() {
     var drawPlayerEmoji = function(px, py) {
-      ctx.drawImage(ballArray[player.emoji.tiletype], px , py, gameBoard.tilewidth, gameBoard.tileheight);
+      ctx.drawImage(ballArray[player.emoji.tiletype], px , py,
+      gameBoard.tilewidth, gameBoard.tileheight);
     }
         player.emoji.x = player.x;
         player.emoji.y = player.y;
@@ -315,7 +354,6 @@ setInterval(function() {
 var distance;
 var collisionTile;
 var detectCollision = function() {
-  // if (moving === true) {
     for (var i = 0; i < gameBoard.rows; i++){
       for (var j = 0; j < gameBoard.columns; j++){
             if (i % 2 === 0) {
@@ -341,9 +379,6 @@ var detectCollision = function() {
     }
 };
 
-/////current problem.... piece touches two tiles, has entire process run
-//// twice...
-
 var closestTileCoordinate = function(x, y) {
   var xToCol;
   var yToRow = Math.round(((y+25)/42)-1);
@@ -355,46 +390,15 @@ var closestTileCoordinate = function(x, y) {
   console.log(yToRow, xToCol);
   snapTile(yToRow, xToCol);
   // gameBoard.tiles[yToRow][xToCol].checked = true;
-  // cluster.push(gameBoard.tiles[yToRow][xToCol]);
-  findMatch(yToRow, xToCol);
-  eliminateCluster();
+  toCheck.push(gameBoard.tiles[yToRow][xToCol]);
+  // findMatch();
+  // eliminateCluster();
 };
 
 var snapTile = function(row, col) {
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
 };
 
-// var collisionTile;
-// var detectCollision = function() {
-//   // if (moving === true) {
-//     for (var i = 0; i < gameBoard.rows; i++){
-//       for (var j = 0; j < gameBoard.columns; j++){
-//         var collisionTile = gameBoard.tiles[i][j];
-//             if (i === 0) {
-//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
-//             collisionTile.y = i * gameBoard.tileheight + gameBoard.tileheight/2;
-//             } else if (i % 2 === 0) {
-//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
-//             collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
-//             } else {
-//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth;
-//             collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
-//             }
-//             var dx = collisionTile.x - player.emoji.x;
-//             var dy = collisionTile.y - player.emoji.y;
-//             var distance = Math.sqrt(dx * dx + dy * dy);
-//               if (collisionTile.type >= 0) {
-//                 if (distance < gameBoard.radius + player.emoji.radius) {
-//                   console.log("collision detected!");
-//                   console.log(player.emoji.x, player.emoji.y);
-//                   console.log(collisionTile);
-//                   moving = false;
-//                 }
-//               }
-//       }
-//     }
-//   // }
-// };
 
 
 
