@@ -8,6 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
+var moving;
 
 
 var canvas = document.getElementById('mainCanvas');
@@ -35,6 +36,7 @@ var Tile = function(row, col, type) {
   this.checked = false;
   this.matched = false;
   this.alpha = 1;
+  radius = 25;
 };
 
 var ball0 = new Image();
@@ -252,11 +254,12 @@ function getMousePos(canvas, evt) {
 canvas.addEventListener('click', function() {
   console.log("clicked");
   movePlayer();
+  moving = true;
 }, false);
 
 
 
-moving = false
+
 function movePlayer() {
     var drawPlayerEmoji = function(px, py) {
       ctx.drawImage(ballArray[player.emoji.tiletype], px , py, gameBoard.tilewidth, gameBoard.tileheight);
@@ -265,23 +268,17 @@ function movePlayer() {
         player.emoji.y = player.y;
         player.emoji.angle = player.angle;
         player.emoji.tiletype = player.tiletype;
-        player.emoji.speed = .05;
+        player.emoji.speed = .5;
         var dx = player.emoji.speed * Math.cos(degToRad(player.emoji.angle));
         var dy = player.emoji.speed * -1*Math.sin(degToRad(player.emoji.angle));
-        setInterval(function() {
-    for (var i = 0; i < 20; i++) {
-      moving = true
-      drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
-    }
+        var moveInterval = setInterval(function(){
+  if (!moving){
+    clearInterval(moveInterval);
+  }
+  drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
 }, 5);
+        moveInterval;
 };
-
-
-
-
-
-
-
 
 
 function degToRad(angle) {
@@ -301,32 +298,6 @@ function renderMouseAngle() {
     ctx.stroke();
 }
 
-
-
-
-
-
-
-  //is tile in an even or odd row?
-
-  // now that we know even or odd we run the RowTouching array against
-  //it's neighbors to see if tile.type matches playerball
-
-  // if tiletype doesn't match playerball we mark as
-// checked: true
-// matched: false
-
-// if tiletype matches playerball we have to mark it as matched
-//(and put it into a new array of matches?)
-
-// now that it's in a new array we have to run the same neighbor
-// function on this new tile.
-// do any of it's neighbors match playerball tiletype?
-// if they do they go into the array as well.
-
-// once all tiles in this array have been checked and no more matches
-// have been found we check the array length.
-
 // if length >= 3, the tile type is changed to -1 and they vanish
 // (eventualy animations and score will be added (ice box))
 
@@ -341,6 +312,27 @@ setInterval(function() {
     renderMouseAngle();
     drawPlayerBall();
   }, 40);
+
+
+// //// work area///
+
+// function findCoordinate(column, row {
+//   var tilex = gameBoard.x = column x level.tilewidth;
+//    if
+// })
+
+// // collision detection:
+
+// for (var i = 0; i < gameBoard.width; i++){
+//   for (var j = 0; j < gameBoard.length; i++){
+//     var collisionTile = gameBoard.tiles[i][j];
+//     if (collisionTile.type >= 0) {
+
+
+//     }
+//   }
+// }
+
 
 
 
