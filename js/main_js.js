@@ -18,7 +18,7 @@ var gameBoard = {
   tileheight: 50,
   tiles: [],
   rowHeight: 42,
-  radius: 25,
+  radius: 20,
 };
 
 var Tile = function(row, col, type) {
@@ -28,7 +28,7 @@ var Tile = function(row, col, type) {
   this.checked = false;
   this.matched = false;
   this.alpha = 1;
-  radius = 25;
+  radius = 20;
   x = 0;
   y = 0;
 };
@@ -156,7 +156,7 @@ function findMatch(trow, tcol) {
       var calccol = tcol + touching[k][1];
       var funtile = gameBoard.tiles[calcrow][calccol];
         if ((calcrow < 10) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-          if ((funtile.type === player.tiletype) && (funtile.checked === false)) {
+          if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
             funtile.matched = true;
             cluster.push(funtile);
           }
@@ -183,7 +183,7 @@ function recluster(cluster) {
 var clusterFound = false;
 
 function foundMatch() {
-  if (cluster.length >= 2) {
+  if (cluster.length >= 3) {
     console.log("cluster found");
     clusterFound = true;
   }
@@ -191,7 +191,7 @@ function foundMatch() {
 
 function eliminateCluster() {
   foundMatch();
-  if (clusterFound = true) {
+  if (clusterFound === true) {
     for (var i = 0; i < cluster.length; i++){
     gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
     gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
@@ -200,6 +200,7 @@ function eliminateCluster() {
   clear();
   reUp();
   cluster = [];
+  clusterFound = false;
 }
 
 function clear() {
@@ -250,6 +251,7 @@ canvas.addEventListener('click', function() {
   console.log("clicked");
   movePlayer();
   moving = true;
+  clusterfound = false;
 }, false);
 
 
@@ -310,31 +312,7 @@ setInterval(function() {
 }, 40);
 
 
-
-// //// work area///
-// var collisionTile.x;
-// var collisionTile.y;
-// var collisionTile;
-
-
-// var getCoordinates() = function((i, j) {
-//             if (i === 0) {
-//             collisionTile.x = i * gameBoard.tileheight + gameBoard.tileheight/2;
-//             collisionTile.y = j * gameboard.tilewidth + gameBoard.tilewidth/2;
-//           } else if (i % 2 === 0) {
-//             collisionTile.y = i * gameBoard.rowheight + gameBoard.rowheight/2;
-//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
-//           } else {
-//             collisionTile.x = i * gameBoard.rowheight + gameBoard.rowheight/2;
-//             collisionTile.x = j * gameBoard.tilewidth + gameBoard.tilewidth;
-//           }
-// });
-
-
-
-
 var distance;
-
 var collisionTile;
 var detectCollision = function() {
   // if (moving === true) {
@@ -356,17 +334,35 @@ var detectCollision = function() {
                   console.log(player.emoji.x, player.emoji.y);
                   console.log(gameBoard.tiles[i][j]);
                   moving = false;
+                  closestTileCoordinate(player.emoji.x, player.emoji.y)
                 }
               }
       }
     }
-
 };
 
-var closestTileCoordinate = function(x, y) {
-  var yToRow = ((y + 25 / 42)+4)
+/////current problem.... piece touches two tiles, has entire process run
+//// twice...
 
-}
+var closestTileCoordinate = function(x, y) {
+  var xToCol;
+  var yToRow = Math.round(((y+25)/42)-1);
+  if (yToRow % 2 === 0) {
+    xToCol = Math.round(((x+25)/50)-1);
+  } else {
+    xToCol = Math.round(((x+50)/50)-1);
+  }
+  console.log(yToRow, xToCol);
+  snapTile(yToRow, xToCol);
+  // gameBoard.tiles[yToRow][xToCol].checked = true;
+  // cluster.push(gameBoard.tiles[yToRow][xToCol]);
+  findMatch(yToRow, xToCol);
+  eliminateCluster();
+};
+
+var snapTile = function(row, col) {
+  gameBoard.tiles[row][col].type = player.emoji.tiletype;
+};
 
 // var collisionTile;
 // var detectCollision = function() {
