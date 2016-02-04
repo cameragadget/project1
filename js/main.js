@@ -1,14 +1,24 @@
 console.log("main_js loaded");
 
+////  LET's GET THIS PARTY STARTED!!!!
+
 document.addEventListener('DOMContentLoaded', function() {
     setUp();
 }, false);
 
-var moving;
+
+/// initializes the canvas  ///
 
 var canvas = document.getElementById('mainCanvas');
 var ctx = canvas.getContext('2d');
 
+/// main information for the game is held in the gameBoard object ////
+///     holds the dimensions of the canvas and the game board     ////
+///   as well as tile information and the master array of tiles   ////
+///     this area also holds global variables used by functions   ////
+
+
+var moving;
 var gameBoard = {
   x: 525,
   y: 650,
@@ -21,6 +31,8 @@ var gameBoard = {
   radius: 20
 };
 
+/// defines the object TILE for emojis and grid ////
+
 var Tile = function(row, col, type) {
   this.row = row;
   this.col = col;
@@ -32,6 +44,8 @@ var Tile = function(row, col, type) {
   x = 0;
   y = 0;
 };
+
+/// initializes emoji images on page load ////
 
 var ball0 = new Image();
 ball0.src='assets/images/0.png';
@@ -46,10 +60,12 @@ ball4.src='assets/images/4.png';
 
 var ballArray = [ball0, ball1, ball2, ball3, ball4];
 
+///  generates random ball from array  ///
+
 var randomBall = ballArray[Math.floor(Math.random()*ballArray.length)];
 
-//this function fills the gameBoard.tiles array with player pieces
-//and blank tiles.
+// this function fills the gameBoard.tiles array ///
+//     with player pieces and blank tiles.       ///
 
 var makeGameBoard = function() {
   for (var i=0; i < gameBoard.rows; i++) {
@@ -66,7 +82,7 @@ var makeGameBoard = function() {
   };
 };
 
-//this function then draws those tiles out.
+/// this function then draws those tiles out ///
 
 function drawTiles() {
   var x = canvas.width;
@@ -91,12 +107,14 @@ function drawTiles() {
   }
 }
 
+/// draws the blue rectangle at the bottom of the playfield ///
+
 var drawGame = function() {
   ctx.fillStyle="#003399";
   ctx.fillRect(0,550,525,100);
 }
 
-// now we have to make a player piece
+/// now we have to make a player piece ///
 
 var player = {
   x: 0,
@@ -115,7 +133,7 @@ var player = {
   }
 };
 
-  // assign player a ball type randomly
+  /// assign player a ball type randomly ///
 
 var makePlayerBall = function() {
   player.tiletype = Math.floor(Math.random()*ballArray.length);
@@ -123,67 +141,18 @@ var makePlayerBall = function() {
   player.y = (580 - (gameBoard.tileheight/2));
 }
 
+/// draw that ball ///
+
 var drawPlayerBall = function() {
   ctx.drawImage(ballArray[player.tiletype], (gameBoard.x/2)-gameBoard.tilewidth/2 , 580 - (gameBoard.tileheight/2), gameBoard.tilewidth, gameBoard.tileheight);
 }
 
-//this is going to be all of the functionality of shooting,
-
-//stop the ball when it intersects with another ball
-
-// make the moving ball bounce off the walls and continue moving
-
-//snapping the ball to the grid,
-
-//incorporating the ball into the grid coordinates to make it a tile
-
-//now that the ball is a tile, we can start running the match
-//functionality to find clusters:
-
-//the ball can be touching up to six different tiles:
+////  ANY GIVEN BALL CAN BE TOUCHING UP TO SIX OTHER BALLS... ////
 
 var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
 var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 
-// somehow we need to be able to identify the array coodinates
-// of the playerBall eve
-// even though we have incorporated it already
-
-// var toCheck= [];
-// var cluster = [];
-// var numberChecked = 0;
-
-// var findMatch = function() {
-//   while(toCheck.length > 0) {
-//     for (var i = 0; i < toCheck.length; i++) {
-//       var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
-//         for (k = 0; k < touching.length; k++) {
-//           var calcrow = toCheck[i].row + touching[k][0];
-//           var calccol = toCheck[i].col + touching[k][1];
-//           var functile = gameBoard.tiles[calcrow][calccol];
-//             if (functile.checked !== true) {
-//             if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-//               if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
-//                 functile.matched = true;
-//                 functile.checked = true;
-//                 toCheck.push(functile);
-//                 numberChecked++;
-//                 cluster.push(toCheck[i]);
-//               } else {
-//                 functile.checked = true;
-//               }
-//             }
-//             }
-//         }
-//     }
-//   }
-// };
-
-
-
-
-
-
+/// runs all neighbors of player emoji to see if they match type ///
 
 var cluster = [];
 
@@ -205,7 +174,7 @@ function findMatch(trow, tcol) {
 
 // now we need to run findMatch on the contents of cluster
 
-var clusterSize = 0
+/// runs find match again on new matches placed in cluster array ///
 
 function recluster(cluster) {
   console.log(cluster);
@@ -219,6 +188,9 @@ function recluster(cluster) {
   }
 };
 
+
+/// alters state of clustersFound if clusters found ///
+
 var clusterFound = false;
 
 function foundMatch() {
@@ -227,6 +199,9 @@ function foundMatch() {
     clusterFound = true;
   }
 };
+
+
+/// eliminates clusters found  ///
 
 function eliminateCluster() {
   foundMatch();
@@ -242,17 +217,22 @@ function eliminateCluster() {
   clusterFound = false;
 }
 
+/// CLEARS THE CANVAS OF OLD TILES FOR REFRESH ///
+
 function clear() {
-  // var canvas = document.getElementById('mainCanvas');
-  // var ctx = canvas.getContext('2d');
   ctx.clearRect(0, 0, 525, 700);
 }
+
+/// REFRESHES GAME TILES AND PIECES WITHOUT FULL RESET ///
 
 function reUp() {
   drawGame();
   drawTiles();
   makePlayerBall();
 }
+
+///  MAIN SET UP FUNCTION  ///
+///    BUILDS PLAYFIELD    ///
 
 function setUp() {
   clear()
@@ -262,10 +242,13 @@ function setUp() {
   makePlayerBall();
 };
 
+/// radians to degrees for mouse angle ///
+
 function radToDeg(angle) {
   return angle * (180 / Math.PI);
 }
 
+/// find mouse position based on canvas coordinates ///
 
 function getMousePos(canvas, evt) {
   var rect = canvas.getBoundingClientRect();
@@ -274,6 +257,10 @@ function getMousePos(canvas, evt) {
     y: evt.clientY - rect.top
   };
 }
+
+/// two event listeners: one for mouse move, one for mouse click ///
+///   mouse calculates position X/Y and converts that to angle   ///
+///   click function changes states and begins player movement   ///
 
 canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
@@ -293,7 +280,9 @@ canvas.addEventListener('click', function() {
   clusterfound = false;
 }, false);
 
-
+/// generates the moving player emoji   ////
+/// by cloning player into player.emoji ////
+/// assigns it motion on mouse click    ////
 
 function movePlayer() {
   var drawPlayerEmoji = function(px, py) {
@@ -314,13 +303,19 @@ function movePlayer() {
     drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
     detectCollision();
   }, 5);
-  // moveInterval;
 };
 
+
+
+
+/// before we render the mouseangle we need to to convert /////
+///       degrees to radians      ///
 
 function degToRad(angle) {
   return angle * (Math.PI / 180);
 }
+
+///  rendering the mouse angle as a visible line  ///
 
 function renderMouseAngle() {
   var centerx = player.x + gameBoard.tilewidth/2;
@@ -334,12 +329,7 @@ function renderMouseAngle() {
   ctx.stroke();
 }
 
-// if length >= 3, the tile type is changed to -1 and they vanish
-// (eventualy animations and score will be added (ice box))
-
-// eventually need to then figure out how to recognize tiles that
-// are now hanging free and make those vanish as well...
-
+///// MAIN INTERVAL LOOP THAT RUNS THE GAME //////
 
 setInterval(function() {
   clear();
@@ -351,6 +341,7 @@ setInterval(function() {
   findWin();
 }, 40);
 
+///// COLLISION DETECTION  /////
 
 var distance;
 var collisionTile;
@@ -382,6 +373,8 @@ var detectCollision = function() {
   }
 };
 
+//// find closest tile coordinate from X/Y ///
+
 var closestTileCoordinate = function(x, y) {
   var xToCol;
   var yToRow = Math.round(((y+25)/42)-1);
@@ -399,11 +392,13 @@ var closestTileCoordinate = function(x, y) {
   eliminateCluster();
 };
 
+      //  MAKE THE MOVING EMOJI SNAP TO THE NEAREST OPEN POSITION  //
+
 var snapTile = function(row, col) {
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
 };
 
-/// find win state //
+                    /// find win state //
 
 var winner = false;
 var findWin = function() {
@@ -419,6 +414,8 @@ var findWin = function() {
   }
 }
 
+                  // find lose state //
+
 var lose = false
 var gameOver = function() {
   for (var i = 0; i < gameBoard.columns; i++){
@@ -428,5 +425,44 @@ var gameOver = function() {
     }
   }
 }
+
+                  ////////////////////
+                  ////SCRATCH PAD/////
+                  ////////////////////
+
+
+// somehow we need to be able to identify the array coodinates
+// of the playerBall even
+// even though we have incorporated it already
+
+// var toCheck= [];
+// var cluster = [];
+// var numberChecked = 0;
+
+// var findMatch = function() {
+//   while(toCheck.length > 0) {
+//     for (var i = 0; i < toCheck.length; i++) {
+//       var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
+//         for (k = 0; k < touching.length; k++) {
+//           var calcrow = toCheck[i].row + touching[k][0];
+//           var calccol = toCheck[i].col + touching[k][1];
+//           var functile = gameBoard.tiles[calcrow][calccol];
+//             if (functile.checked !== true) {
+//             if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+//               if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
+//                 functile.matched = true;
+//                 functile.checked = true;
+//                 toCheck.push(functile);
+//                 numberChecked++;
+//                 cluster.push(toCheck[i]);
+//               } else {
+//                 functile.checked = true;
+//               }
+//             }
+//             }
+//         }
+//     }
+//   }
+// };
 
 
