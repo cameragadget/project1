@@ -1,7 +1,7 @@
 Bust a Move
 ===========
 
-![Bust-a-Move](http://www.shooter-bubble.com/puzzle-bobble.jpg)
+![Bust-e-moji](assets/bustjoj.png)
 
 
 

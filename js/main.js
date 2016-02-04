@@ -1,3 +1,5 @@
+"use strict";
+
 console.log("main_js loaded");
 
 ////  LET's GET THIS PARTY STARTED!!!!
@@ -16,8 +18,9 @@ var ctx = canvas.getContext('2d');
 ///     holds the dimensions of the canvas and the game board     ////
 ///   as well as tile information and the master array of tiles   ////
 ///     this area also holds global variables used by functions   ////
-
-
+var moveInterval;
+var clusterFound;
+var gameScore = 0
 var moving;
 var gameBoard = {
   x: 525,
@@ -40,9 +43,9 @@ var Tile = function(row, col, type) {
   this.checked = false;
   this.matched = false;
   this.alpha = 1;
-  radius = 20;
-  x = 0;
-  y = 0;
+  this.radius = 20;
+  this.x = 0;
+  this.y = 0;
 };
 
 /// initializes emoji images on page load ////
@@ -126,7 +129,7 @@ canvas.addEventListener('click', function() {
   console.log("clicked");
   movePlayer();
   moving = true;
-  clusterfound = false;
+  clusterFound = false;
 }, false);
 
 /// radians to degrees for mouse angle ///
@@ -180,7 +183,7 @@ var player = {
     col: 0,
     angle: 0,
     speed: 0,
-    radius: 20,
+    radius: 5,
     tiletype: -1,
   }
 };
@@ -228,6 +231,7 @@ function movePlayer() {
 
 var distance;
 var collisionTile;
+
 var detectCollision = function() {
   for (var i = 0; i < gameBoard.rows; i++){
     for (var j = 0; j < gameBoard.columns; j++){
@@ -260,7 +264,7 @@ var detectCollision = function() {
 
 var closestTileCoordinate = function(x, y) {
   var xToCol;
-  var yToRow = Math.round(((y+25)/42)-1);
+  var yToRow = Math.ceil(((y+25)/42)-1);
   if (yToRow % 2 === 0) {
     xToCol = Math.round(((x+25)/50)-1);
   }   else {
@@ -268,18 +272,16 @@ var closestTileCoordinate = function(x, y) {
   }
   console.log(yToRow, xToCol);
   snapTile(yToRow, xToCol);
-  // gameBoard.tiles[yToRow][xToCol].checked = true;
-  // toCheck.push(gameBoard.tiles[yToRow][xToCol]);
-  // findMatch();
   findMatch(yToRow, xToCol);
   eliminateCluster();
+  return;
 };
 
-      //  MAKE THE MOVING EMOJI SNAP TO THE NEAREST OPEN POSITION  //
+      //  MAKE THE MOVING EMOJI "SNAP" TO THE NEAREST OPEN POSITION  //
 
 var snapTile = function(row, col) {
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
-  // player.emoji.tiletype = -1;
+  gameBoard.tiles[row][col].radius = 20;
 };
 
 ////  ANY GIVEN BALL CAN BE TOUCHING UP TO SIX OTHER BALLS... ////
@@ -293,7 +295,7 @@ var cluster = [];
 
 function findMatch(trow, tcol) {
   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
-  for (k = 0; k < touching.length; k++) {
+  for (var k = 0; k < touching.length; k++) {
     var calcrow = trow + touching[k][0];
     var calccol = tcol + touching[k][1];
     var funtile = gameBoard.tiles[calcrow][calccol];
@@ -341,6 +343,7 @@ function eliminateCluster() {
     for (var i = 0; i < cluster.length; i++){
       gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
       gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
+      gameScore += cluster.length;
     }
   }
   clear();
@@ -391,6 +394,12 @@ var gameOver = function() {
 
 /// draws the blue rectangle at the bottom of the playfield ///
 
+var drawScore = function() {
+  ctx.fillStyle = "black";
+  ctx.font = "20px serif";
+  ctx.fillText("Score: " + gameScore, 35, 600);
+}
+
 var drawGame = function() {
   ctx.fillStyle="#003399";
   ctx.fillRect(0,550,525,100);
@@ -401,6 +410,7 @@ var drawGame = function() {
 setInterval(function() {
   clear();
   drawGame();
+  drawScore()
   drawTiles();
   renderMouseAngle();
   drawPlayerBall();
