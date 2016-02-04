@@ -348,8 +348,8 @@ function eliminateCluster() {
       gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
       gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
     }
+    gameScore += cluster.length;
   }
-  gameScore += cluster.length;
   clear();
   reUp();
   cluster = [];
