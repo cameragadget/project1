@@ -206,6 +206,7 @@ var drawPlayerBall = function() {
 /// by cloning player into player.emoji ////
 /// assigns it motion on mouse click    ////
 
+
 function movePlayer() {
   var drawPlayerEmoji = function(px, py) {
     ctx.drawImage(ballArray[player.emoji.tiletype], px , py,
@@ -222,6 +223,9 @@ function movePlayer() {
     if (!moving){
       clearInterval(moveInterval);
     }
+    if ((player.emoji.x + dx > gameBoard.x -50) || (player.emoji.x + dx < 0)) {
+    dx = -dx;
+    };
     drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
     detectCollision();
   }, 5);
