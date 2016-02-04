@@ -279,6 +279,7 @@ var closestTileCoordinate = function(x, y) {
 
 var snapTile = function(row, col) {
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
+  // player.emoji.tiletype = -1;
 };
 
 ////  ANY GIVEN BALL CAN BE TOUCHING UP TO SIX OTHER BALLS... ////
@@ -352,8 +353,8 @@ function eliminateCluster() {
 /// resets tiles so they can be run though findMatch again ///
 
 var cleanTile = function() {
-  for (var i = 0; i < gameBoard.columns; i++){
-    for (var j = 0; j < gameBoard.rows; j++){
+  for (var i = 0; i < gameBoard.rows; i++){
+    for (var j = 0; j < gameBoard.columns; j++){
       gameBoard.tiles[i][j].checked = false;
       gameBoard.tiles[i][j].matched = false;
     }
