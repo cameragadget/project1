@@ -117,11 +117,11 @@ function drawTiles() {
 canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
   console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
-  var mouseangle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
-  if (mouseangle < 0) {
-    mouseangle = 180 + (180 + mouseangle);
+  var mouseAngle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
+  if (mouseAngle < 0) {
+    mouseAngle = 180 + (180 + mouseAngle);
   }
-  player.angle = mouseangle;
+  player.angle = mouseAngle;
   renderMouseAngle();
 }, false);
 
@@ -343,9 +343,9 @@ function eliminateCluster() {
     for (var i = 0; i < cluster.length; i++){
       gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
       gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
-      gameScore += cluster.length;
     }
   }
+  gameScore += cluster.length;
   clear();
   reUp();
   cluster = [];
