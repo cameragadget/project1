@@ -270,20 +270,27 @@ var closestTileCoordinate = function(x, y) {
   var xToCol;
   var yToRow = Math.ceil(((y+25)/42)-1);
   if (yToRow % 2 === 0) {
-    xToCol = Math.round(((x+25)/50)-1);
-  }   else {
     xToCol = Math.round(((x+50)/50)-1);
+  }   else {
+    xToCol = Math.round(((x+25)/50)-1);
   }
   console.log(yToRow, xToCol);
   snapTile(yToRow, xToCol);
+  cluster.push(gameBoard.tiles[yToRow][xToCol]);
   findMatch(yToRow, xToCol);
-  eliminateCluster();
+    setTimeout(function() {   eliminateCluster();
+    }, 100);
   return;
 };
 
       //  MAKE THE MOVING EMOJI "SNAP" TO THE NEAREST OPEN POSITION  //
 
 var snapTile = function(row, col) {
+  if (gameBoard.tiles[row][col].type !== -1){
+    console.log("error snapping");
+    gameBoard.tiles[row + 1][col].type = player.emoji.tiletype;
+    gameBoard.tiles[row][col].radius = 20;
+  }
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
   gameBoard.tiles[row][col].radius = 20;
 };
@@ -298,32 +305,41 @@ var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 var cluster = [];
 
 function findMatch(trow, tcol) {
-  var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
-  for (var k = 0; k < touching.length; k++) {
-    var calcrow = trow + touching[k][0];
-    var calccol = tcol + touching[k][1];
-    var funtile = gameBoard.tiles[calcrow][calccol];
-      if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+
+  // debugger
+
+  if (gameBoard.tiles[trow][tcol].checked === false) {
+
+
+    var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
+    gameBoard.tiles[trow][tcol].checked = true;
+    gameBoard.tiles[trow][tcol].matched = true;
+
+
+    for (var k = 0; k < touching.length; k++) {
+      var calcrow = trow + touching[k][0];
+      var calccol = tcol + touching[k][1];
+      if ((calcrow < 13) && (calcrow >= 0) && (calccol < 10) && (calccol >= 0)){
+        var funtile = gameBoard.tiles[calcrow][calccol];
         if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
-          funtile.matched = true;
-          cluster.push(funtile);
+            funtile.matched = true;
+            cluster.push(funtile);
         }
       }
+    }
+    reCluster();
   }
-  recluster(cluster);
 };
 
 ///    now we need to run findMatch on the contents of cluster   ////
 /// runs find match again on new matches placed in cluster array ///
 
-function recluster(cluster) {
+function reCluster() {
   console.log(cluster);
   for (var i = 0; i < cluster.length; i++) {
     if (cluster[i].checked === false) {
-      cluster[i].checked = true;
       findMatch(cluster[i].row, cluster[i].col);
-    } else {
-      return;
+      // cluster[i].checked = true;
     }
   }
 };
