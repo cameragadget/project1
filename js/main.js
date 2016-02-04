@@ -107,11 +107,63 @@ function drawTiles() {
   }
 }
 
-/// draws the blue rectangle at the bottom of the playfield ///
+/// two event listeners: one for mouse move, one for mouse click ///
+///   mouse calculates position X/Y and converts that to angle   ///
+///   click function changes states and begins player movement   ///
 
-var drawGame = function() {
-  ctx.fillStyle="#003399";
-  ctx.fillRect(0,550,525,100);
+canvas.addEventListener('mousemove', function(evt) {
+  var mousePos = getMousePos(canvas, evt);
+  console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
+  var mouseangle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
+  if (mouseangle < 0) {
+    mouseangle = 180 + (180 + mouseangle);
+  }
+  player.angle = mouseangle;
+  renderMouseAngle();
+}, false);
+
+canvas.addEventListener('click', function() {
+  console.log("clicked");
+  movePlayer();
+  moving = true;
+  clusterfound = false;
+}, false);
+
+/// radians to degrees for mouse angle ///
+
+function radToDeg(angle) {
+  return angle * (180 / Math.PI);
+}
+
+/// find mouse position based on canvas coordinates ///
+
+function getMousePos(canvas, evt) {
+  var rect = canvas.getBoundingClientRect();
+  return {
+    x: evt.clientX - rect.left,
+    y: evt.clientY - rect.top
+  };
+}
+
+/// before we render the mouseangle we need to to convert /////
+///       degrees to radians      ///
+
+function degToRad(angle) {
+  return angle * (Math.PI / 180);
+}
+
+///  rendering the mouse angle as a visible line  ///
+
+function renderMouseAngle() {
+  var centerx = player.x + gameBoard.tilewidth/2;
+  var centery = player.y + gameBoard.tileheight/2;
+  ctx.lineWidth = 4;
+  ctx.strokeStyle = "#000000";
+  ctx.beginPath();
+  ctx.moveTo(centerx, centery);
+  ctx.lineTo(centerx + 1.5*gameBoard.tilewidth * Math.cos(degToRad(player.angle)),
+             centery - 1.5*gameBoard.tileheight * Math.sin(degToRad(player.angle)));
+  ctx.stroke();
 }
 
 /// now we have to make a player piece ///
@@ -147,139 +199,6 @@ var drawPlayerBall = function() {
   ctx.drawImage(ballArray[player.tiletype], (gameBoard.x/2)-gameBoard.tilewidth/2 , 580 - (gameBoard.tileheight/2), gameBoard.tilewidth, gameBoard.tileheight);
 }
 
-////  ANY GIVEN BALL CAN BE TOUCHING UP TO SIX OTHER BALLS... ////
-
-var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
-var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
-
-/// runs all neighbors of player emoji to see if they match type ///
-
-var cluster = [];
-
-function findMatch(trow, tcol) {
-  var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
-  for (k = 0; k < touching.length; k++) {
-    var calcrow = trow + touching[k][0];
-    var calccol = tcol + touching[k][1];
-    var funtile = gameBoard.tiles[calcrow][calccol];
-      if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-        if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
-          funtile.matched = true;
-          cluster.push(funtile);
-        }
-      }
-  }
-  recluster(cluster);
-};
-
-// now we need to run findMatch on the contents of cluster
-
-/// runs find match again on new matches placed in cluster array ///
-
-function recluster(cluster) {
-  console.log(cluster);
-  for (var i = 0; i < cluster.length; i++) {
-    if (cluster[i].checked === false) {
-      cluster[i].checked = true;
-      findMatch(cluster[i].row, cluster[i].col);
-    } else {
-      return;
-    }
-  }
-};
-
-
-/// alters state of clustersFound if clusters found ///
-
-var clusterFound = false;
-
-function foundMatch() {
-  if (cluster.length >= 3) {
-    console.log("cluster found");
-    clusterFound = true;
-  }
-};
-
-
-/// eliminates clusters found  ///
-
-function eliminateCluster() {
-  foundMatch();
-  if (clusterFound === true) {
-    for (var i = 0; i < cluster.length; i++){
-      gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
-      gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
-    }
-  }
-  clear();
-  reUp();
-  cluster = [];
-  clusterFound = false;
-}
-
-/// CLEARS THE CANVAS OF OLD TILES FOR REFRESH ///
-
-function clear() {
-  ctx.clearRect(0, 0, 525, 700);
-}
-
-/// REFRESHES GAME TILES AND PIECES WITHOUT FULL RESET ///
-
-function reUp() {
-  drawGame();
-  drawTiles();
-  makePlayerBall();
-}
-
-///  MAIN SET UP FUNCTION  ///
-///    BUILDS PLAYFIELD    ///
-
-function setUp() {
-  clear()
-  drawGame();
-  makeGameBoard();
-  drawTiles();
-  makePlayerBall();
-};
-
-/// radians to degrees for mouse angle ///
-
-function radToDeg(angle) {
-  return angle * (180 / Math.PI);
-}
-
-/// find mouse position based on canvas coordinates ///
-
-function getMousePos(canvas, evt) {
-  var rect = canvas.getBoundingClientRect();
-  return {
-    x: evt.clientX - rect.left,
-    y: evt.clientY - rect.top
-  };
-}
-
-/// two event listeners: one for mouse move, one for mouse click ///
-///   mouse calculates position X/Y and converts that to angle   ///
-///   click function changes states and begins player movement   ///
-
-canvas.addEventListener('mousemove', function(evt) {
-  var mousePos = getMousePos(canvas, evt);
-  console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
-  var mouseangle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
-  if (mouseangle < 0) {
-    mouseangle = 180 + (180 + mouseangle);
-  }
-  player.angle = mouseangle;
-  renderMouseAngle();
-}, false);
-
-canvas.addEventListener('click', function() {
-  console.log("clicked");
-  movePlayer();
-  moving = true;
-  clusterfound = false;
-}, false);
-
 /// generates the moving player emoji   ////
 /// by cloning player into player.emoji ////
 /// assigns it motion on mouse click    ////
@@ -304,42 +223,6 @@ function movePlayer() {
     detectCollision();
   }, 5);
 };
-
-
-
-
-/// before we render the mouseangle we need to to convert /////
-///       degrees to radians      ///
-
-function degToRad(angle) {
-  return angle * (Math.PI / 180);
-}
-
-///  rendering the mouse angle as a visible line  ///
-
-function renderMouseAngle() {
-  var centerx = player.x + gameBoard.tilewidth/2;
-  var centery = player.y + gameBoard.tileheight/2;
-  ctx.lineWidth = 4;
-  ctx.strokeStyle = "#000000";
-  ctx.beginPath();
-  ctx.moveTo(centerx, centery);
-  ctx.lineTo(centerx + 1.5*gameBoard.tilewidth * Math.cos(degToRad(player.angle)),
-             centery - 1.5*gameBoard.tileheight * Math.sin(degToRad(player.angle)));
-  ctx.stroke();
-}
-
-///// MAIN INTERVAL LOOP THAT RUNS THE GAME //////
-
-setInterval(function() {
-  clear();
-  drawGame();
-  drawTiles();
-  renderMouseAngle();
-  drawPlayerBall();
-  gameOver();
-  findWin();
-}, 40);
 
 ///// COLLISION DETECTION  /////
 
@@ -398,6 +281,85 @@ var snapTile = function(row, col) {
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
 };
 
+////  ANY GIVEN BALL CAN BE TOUCHING UP TO SIX OTHER BALLS... ////
+
+var evenRowTouching = [[-1,-1], [-1,0], [0,-1], [0,1], [1,-1], [1,0]];
+var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
+
+/// runs all neighbors of player emoji to see if they match type ///
+
+var cluster = [];
+
+function findMatch(trow, tcol) {
+  var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
+  for (k = 0; k < touching.length; k++) {
+    var calcrow = trow + touching[k][0];
+    var calccol = tcol + touching[k][1];
+    var funtile = gameBoard.tiles[calcrow][calccol];
+      if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+        if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
+          funtile.matched = true;
+          cluster.push(funtile);
+        }
+      }
+  }
+  recluster(cluster);
+};
+
+///    now we need to run findMatch on the contents of cluster   ////
+/// runs find match again on new matches placed in cluster array ///
+
+function recluster(cluster) {
+  console.log(cluster);
+  for (var i = 0; i < cluster.length; i++) {
+    if (cluster[i].checked === false) {
+      cluster[i].checked = true;
+      findMatch(cluster[i].row, cluster[i].col);
+    } else {
+      return;
+    }
+  }
+};
+
+/// alters state of clustersFound if clusters found ///
+
+var clusterFound = false;
+
+function foundMatch() {
+  if (cluster.length >= 3) {
+    console.log("cluster found");
+    clusterFound = true;
+  }
+};
+
+/// eliminates clusters found  ///
+
+function eliminateCluster() {
+  foundMatch();
+  if (clusterFound === true) {
+    for (var i = 0; i < cluster.length; i++){
+      gameBoard.tiles[cluster[i].row][cluster[i].col].type = -1;
+      gameBoard.tiles[cluster[i].row][cluster[i].col].aplha = 0;
+    }
+  }
+  clear();
+  reUp();
+  cluster = [];
+  clusterFound = false;
+  cleanTile();
+}
+
+/// resets tiles so they can be run though findMatch again ///
+
+var cleanTile = function() {
+  for (var i = 0; i < gameBoard.columns; i++){
+    for (var j = 0; j < gameBoard.rows; j++){
+      gameBoard.tiles[i][j].checked = false;
+      gameBoard.tiles[i][j].matched = false;
+    }
+  }
+}
+
                     /// find win state //
 
 var winner = false;
@@ -425,6 +387,51 @@ var gameOver = function() {
     }
   }
 }
+
+/// draws the blue rectangle at the bottom of the playfield ///
+
+var drawGame = function() {
+  ctx.fillStyle="#003399";
+  ctx.fillRect(0,550,525,100);
+}
+
+///// MAIN INTERVAL LOOP THAT RUNS THE GAME //////
+
+setInterval(function() {
+  clear();
+  drawGame();
+  drawTiles();
+  renderMouseAngle();
+  drawPlayerBall();
+  gameOver();
+  findWin();
+}, 40);
+
+///  MAIN SET UP FUNCTION  ///
+///    BUILDS PLAYFIELD    ///
+
+function setUp() {
+  clear()
+  drawGame();
+  makeGameBoard();
+  drawTiles();
+  makePlayerBall();
+};
+
+/// REFRESHES GAME TILES AND PIECES WITHOUT FULL RESET ///
+
+function reUp() {
+  drawGame();
+  drawTiles();
+  makePlayerBall();
+}
+
+/// CLEARS THE CANVAS OF OLD TILES FOR REFRESH ///
+
+function clear() {
+  ctx.clearRect(0, 0, 525, 700);
+}
+
 
                   ////////////////////
                   ////SCRATCH PAD/////
