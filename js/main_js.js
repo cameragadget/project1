@@ -11,7 +11,7 @@ var ctx = canvas.getContext('2d');
 
 var gameBoard = {
   x: 525,
-  y: 700,
+  y: 650,
   rows: 13,
   columns: 10,
   tilewidth: 50,
@@ -92,8 +92,8 @@ var width = 50;
 }
 
 var drawGame = function() {
-  ctx.fillStyle="#FF0000";
-  ctx.fillRect(0,550,525,146);
+  ctx.fillStyle="#003399";
+  ctx.fillRect(0,550,525,100);
 }
 
 // now we have to make a player piece
@@ -148,75 +148,75 @@ var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
   //of the playerBall eve
 // even though we have incorporated it already
 
-var toCheck= [];
-var cluster = [];
-var numberChecked = 0;
-
-var findMatch = function() {
-  while(toCheck.length > 0) {
-    for (var i = 0; i < toCheck.length; i++) {
-      var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
-        for (k = 0; k < touching.length; k++) {
-          var calcrow = toCheck[i].row + touching[k][0];
-          var calccol = toCheck[i].col + touching[k][1];
-          var functile = gameBoard.tiles[calcrow][calccol];
-            if (functile.checked !== true) {
-            if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-              if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
-                functile.matched = true;
-                functile.checked = true;
-                toCheck.push(functile);
-                numberChecked++;
-                cluster.push(toCheck[i]);
-              } else {
-                functile.checked = true;
-              }
-            }
-            }
-        }
-    }
-  }
-};
-
-
-
-
-
-
-
+// var toCheck= [];
 // var cluster = [];
+// var numberChecked = 0;
 
-// function findMatch(trow, tcol) {
-
-//   var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
-//     for (k = 0; k < touching.length; k++) {
-//       var calcrow = trow + touching[k][0];
-//       var calccol = tcol + touching[k][1];
-//       var funtile = gameBoard.tiles[calcrow][calccol];
-//         if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-//           if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
-//             funtile.matched = true;
-//             cluster.push(funtile);
-//           }
+// var findMatch = function() {
+//   while(toCheck.length > 0) {
+//     for (var i = 0; i < toCheck.length; i++) {
+//       var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
+//         for (k = 0; k < touching.length; k++) {
+//           var calcrow = toCheck[i].row + touching[k][0];
+//           var calccol = toCheck[i].col + touching[k][1];
+//           var functile = gameBoard.tiles[calcrow][calccol];
+//             if (functile.checked !== true) {
+//             if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+//               if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
+//                 functile.matched = true;
+//                 functile.checked = true;
+//                 toCheck.push(functile);
+//                 numberChecked++;
+//                 cluster.push(toCheck[i]);
+//               } else {
+//                 functile.checked = true;
+//               }
+//             }
+//             }
 //         }
-//     }
-//     recluster(cluster);
-// };
-
-// // now we need to run findMatch on the contents of cluster
-
-// var clusterSize = 0
-// function recluster(cluster) {
-//   console.log(cluster);
-//   for (var i = 0; i < cluster.length; i++) {
-//     if (cluster[i].checked === false) {
-//       cluster[i].checked = true;
-//       findMatch(cluster[i].row, cluster[i].col);
-//     } else {
-//       return;
 //     }
 //   }
 // };
+
+
+
+
+
+
+
+var cluster = [];
+
+function findMatch(trow, tcol) {
+
+  var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
+    for (k = 0; k < touching.length; k++) {
+      var calcrow = trow + touching[k][0];
+      var calccol = tcol + touching[k][1];
+      var funtile = gameBoard.tiles[calcrow][calccol];
+        if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+          if ((funtile.type === player.emoji.tiletype) && (funtile.checked === false)) {
+            funtile.matched = true;
+            cluster.push(funtile);
+          }
+        }
+    }
+    recluster(cluster);
+};
+
+// now we need to run findMatch on the contents of cluster
+
+var clusterSize = 0
+function recluster(cluster) {
+  console.log(cluster);
+  for (var i = 0; i < cluster.length; i++) {
+    if (cluster[i].checked === false) {
+      cluster[i].checked = true;
+      findMatch(cluster[i].row, cluster[i].col);
+    } else {
+      return;
+    }
+  }
+};
 
 var clusterFound = false;
 
@@ -278,11 +278,11 @@ canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
   console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
   var mouseangle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
-  if (mouseangle < 0) {
+    if (mouseangle < 0) {
       mouseangle = 180 + (180 + mouseangle);
-  }
-    player.angle = mouseangle;
-    renderMouseAngle();
+    }
+      player.angle = mouseangle;
+      renderMouseAngle();
 }, false);
 
 canvas.addEventListener('click', function() {
@@ -309,10 +309,10 @@ function movePlayer() {
         var dy = player.emoji.speed * -1*Math.sin(degToRad(player.emoji.angle));
         var moveInterval = setInterval(function(){
           if (!moving){
-          clearInterval(moveInterval);
+            clearInterval(moveInterval);
           }
-          drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
-          detectCollision();
+            drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
+            detectCollision();
         }, 5);
         moveInterval;
 };
@@ -325,9 +325,8 @@ function degToRad(angle) {
 function renderMouseAngle() {
     var centerx = player.x + gameBoard.tilewidth/2;
     var centery = player.y + gameBoard.tileheight/2;
-
     ctx.lineWidth = 4;
-    ctx.strokeStyle = "#0000ff";
+    ctx.strokeStyle = "#000000";
     ctx.beginPath();
     ctx.moveTo(centerx, centery);
     ctx.lineTo(centerx + 1.5*gameBoard.tilewidth * Math.cos(degToRad(player.angle)),
@@ -348,6 +347,8 @@ setInterval(function() {
     drawTiles();
     renderMouseAngle();
     drawPlayerBall();
+    gameOver();
+    findWin();
 }, 40);
 
 
@@ -382,23 +383,49 @@ var detectCollision = function() {
 var closestTileCoordinate = function(x, y) {
   var xToCol;
   var yToRow = Math.round(((y+25)/42)-1);
-  if (yToRow % 2 === 0) {
-    xToCol = Math.round(((x+25)/50)-1);
-  } else {
-    xToCol = Math.round(((x+50)/50)-1);
-  }
-  console.log(yToRow, xToCol);
-  snapTile(yToRow, xToCol);
-  // gameBoard.tiles[yToRow][xToCol].checked = true;
-  toCheck.push(gameBoard.tiles[yToRow][xToCol]);
-  // findMatch();
-  // eliminateCluster();
+    if (yToRow % 2 === 0) {
+      xToCol = Math.round(((x+25)/50)-1);
+    }   else {
+      xToCol = Math.round(((x+50)/50)-1);
+    }
+      console.log(yToRow, xToCol);
+      snapTile(yToRow, xToCol);
+      // gameBoard.tiles[yToRow][xToCol].checked = true;
+      // toCheck.push(gameBoard.tiles[yToRow][xToCol]);
+      // findMatch();
+      findMatch(yToRow, xToCol);
+      eliminateCluster();
 };
 
 var snapTile = function(row, col) {
   gameBoard.tiles[row][col].type = player.emoji.tiletype;
 };
 
+/// find win state //
+
+var winner = false;
+var findWin = function() {
+  for (var i = 0; i < gameBoard.columns; i++){
+    for (var j = 0; j < gameBoard.rows; j++){
+      if (gameBoard.tiles[i][j] !== -1) {
+        winner = false;
+      } else {
+        winner = true;
+        console.log("winner!");
+      }
+    }
+  }
+}
+
+var lose = false
+var gameOver = function() {
+  for (var i = 0; i < gameBoard.columns; i++){
+    if (gameBoard.tiles[gameBoard.rows-1][i].type !== -1){
+      lose = true;
+      console.log("game over")
+    }
+  }
+}
 
 
 
