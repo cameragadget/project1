@@ -46,6 +46,7 @@ var Tile = function(row, col, type) {
   this.matched = false;
   this.alpha = 1;
   this.radius = 20;
+  this.drop = true
   this.x = 0;
   this.y = 0;
 };
@@ -190,7 +191,7 @@ var player = {
     col: 0,
     angle: 0,
     speed: 0,
-    radius: 5,
+    radius: 10,
     tiletype: -1,
   }
 };
@@ -237,7 +238,7 @@ function movePlayer() {
       closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
     };
     drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
-    detectCollision();
+    closestTileCoordinate(player.emoji.x, player.emoji.y);
   }, 5);
 };
 
@@ -279,6 +280,9 @@ var detectCollision = function() {
 var closestTileCoordinate = function(x, y) {
   var xToCol;
   var yToRow = Math.ceil(((y+25)/42)-1);
+  if (yToRow < 0){
+    yToRow = 0;
+  }
   if (yToRow % 2 === 0) {
     xToCol = Math.round(((x+50)/50)-1);
   }   else {
@@ -316,9 +320,6 @@ var oddRowTouching = [[-1,0], [-1,1], [0,-1], [0,1], [1,0], [1,1]];
 var cluster = [];
 
 function findMatch(trow, tcol) {
-
-  // debugger
-
   if (gameBoard.tiles[trow][tcol].checked === false) {
     var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
     gameBoard.tiles[trow][tcol].checked = true;
@@ -346,7 +347,6 @@ function reCluster() {
   for (var i = 0; i < cluster.length; i++) {
     if (cluster[i].checked === false) {
       findMatch(cluster[i].row, cluster[i].col);
-      // cluster[i].checked = true;
     }
   }
 };
@@ -383,9 +383,6 @@ function eliminateCluster() {
 /// resets tiles so they can be run though findMatch again ///
 
 var cleanTile = function() {
-
-  // debugger
-
   for (var i = 0; i < gameBoard.rows; i++){
     for (var j = 0; j < gameBoard.columns; j++){
       gameBoard.tiles[i][j].checked = false;
@@ -507,17 +504,49 @@ var winGame = function(){
   }
 };
 
+
+
+
                   ////////////////////
-                  ////SCRATCH PAD/////
+                  //  SCRATCH PAD  ///
+               //// HERE BE PIRATES ////
                   ////////////////////
+
+
+
+// var soloTiles = []
+
+// var dropClustersLiteTM = function(){
+//     for (var i = 0; i < 13; i++){
+//       for (var j = 0; j < 10; j++) {
+//         var touching = calcrow % 2 === 0 ? evenRowTouching : oddRowTouching;
+//         for (var k = 0; k < touching.length; k++) {
+//           var calcrow = i + touching[k][0];
+//           var calccol = j + touching[k][1];
+//           if ((calcrow < 13) && (calcrow >= 0) && (calccol < 10) && (calccol >= 0)){
+//             var functile = gameBoard.tiles[calcrow][calccol];
+//             if (functile.type !== -1) {
+//                 gameBoard.tiles[i][j].drop = false;
+//                 return;
+//             } else {
+//               soloTiles.push(gameBoard.tiles[i][j]);
+//             }
+//           }
+//         }
+//       }
+//     }
+// }
+
+
+
 
 // var hangers = []
 
 // var checkForHangers = function() {
-//   for (var i = 0; i < gameBoard.rows; i++){
-//     for (var k = 0; k < gameBoard.columns; k++){
-//       if (gameBoard.tiles[i][k].checked === true) {
-//         hangers.push(gameBoard.tiles[i][k]);
+  // for (var i = 0; i < gameBoard.rows; i++){
+  //   for (var k = 0; k < gameBoard.columns; k++){
+  //     if (gameBoard.tiles[i][k].checked === true) {
+  //       hangers.push(gameBoard.tiles[i][k]);
 //       }
 //     }
 //   }
@@ -558,35 +587,4 @@ var winGame = function(){
 //     }
 //   }
 // };
-
-// var toCheck= [];
-// var cluster = [];
-// var numberChecked = 0;
-
-// var findMatch = function() {
-//   while(toCheck.length > 0) {
-//     for (var i = 0; i < toCheck.length; i++) {
-//       var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
-//         for (k = 0; k < touching.length; k++) {
-//           var calcrow = toCheck[i].row + touching[k][0];
-//           var calccol = toCheck[i].col + touching[k][1];
-//           var functile = gameBoard.tiles[calcrow][calccol];
-//             if (functile.checked !== true) {
-//             if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
-//               if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
-//                 functile.matched = true;
-//                 functile.checked = true;
-//                 toCheck.push(functile);
-//                 numberChecked++;
-//                 cluster.push(toCheck[i]);
-//               } else {
-//                 functile.checked = true;
-//               }
-//             }
-//             }
-//         }
-//     }
-//   }
-// };
-
 

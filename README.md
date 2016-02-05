@@ -1,7 +1,7 @@
 Bust a Move
 ===========
 
-![Bust-e-moji](assets/bustjoj.png)
+![Bust-e-moji](https://github.com/cameragadget/project1/blob/gh-pages/assets/bustmoj.png)
 
 
 
