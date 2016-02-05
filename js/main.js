@@ -1,13 +1,12 @@
-"use strict";
+'use strict';
 
-console.log("main_js loaded");
+console.log('main_js loaded');
 
 ////  LET's GET THIS PARTY STARTED!!!!
 
 document.addEventListener('DOMContentLoaded', function() {
     setUp();
 }, false);
-
 
 /// initializes the canvas  ///
 
@@ -18,12 +17,14 @@ var ctx = canvas.getContext('2d');
 ///     holds the dimensions of the canvas and the game board     ////
 ///   as well as tile information and the master array of tiles   ////
 ///     this area also holds global variables used by functions   ////
+
 var win = false;
 var lose = false;
 var moveInterval;
 var clusterFound;
 var gameScore = 0
 var moving;
+
 var gameBoard = {
   x: 525,
   y: 650,
@@ -46,7 +47,6 @@ var Tile = function(row, col, type) {
   this.matched = false;
   this.alpha = 1;
   this.radius = 20;
-  this.drop = true
   this.x = 0;
   this.y = 0;
 };
@@ -104,9 +104,11 @@ function drawTiles() {
     for(var j=0; j < 10; j++){
       if (gameBoard.tiles[i][j].type !== -1) {
         if (i%2 === 0) {
-        ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],(width)*j, yPos, width, height);
+          ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],
+          (width)*j, yPos, width, height);
         } else {
-        ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],((width)*j)+(width/2), yPos, width, height);
+          ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],
+          ((width)*j)+(width/2), yPos, width, height);
         }
       }
     }
@@ -120,17 +122,17 @@ function drawTiles() {
 canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
   console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
-  var mouseAngle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2) - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
+  var mouseAngle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2)
+      - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
   if (mouseAngle < 0) {
     mouseAngle = 180 + (180 + mouseAngle);
   }
   player.angle = mouseAngle;
-  // renderMouseAngle();
 }, false);
 
 canvas.addEventListener('click', function() {
   if (!lose){
-  console.log("clicked");
+  console.log('clicked');
   movePlayer();
   moving = true;
   clusterFound = false;
@@ -169,7 +171,7 @@ function renderMouseAngle() {
   var centerx = player.x + gameBoard.tilewidth/2;
   var centery = player.y + gameBoard.tileheight/2;
   ctx.lineWidth = 4;
-  ctx.strokeStyle = "#000000";
+  ctx.strokeStyle = '#000000';
   ctx.beginPath();
   ctx.moveTo(centerx, centery);
   ctx.lineTo(centerx + 1.5*gameBoard.tilewidth * Math.cos(degToRad(player.angle)),
@@ -207,7 +209,10 @@ var makePlayerBall = function() {
 /// draw that ball ///
 
 var drawPlayerBall = function() {
-  ctx.drawImage(ballArray[player.tiletype], (gameBoard.x/2)-gameBoard.tilewidth/2 , 580 - (gameBoard.tileheight/2), gameBoard.tilewidth, gameBoard.tileheight);
+  ctx.drawImage(ballArray[player.tiletype],
+  (gameBoard.x/2)-gameBoard.tilewidth/2,
+  580 - (gameBoard.tileheight/2),
+  gameBoard.tilewidth, gameBoard.tileheight);
 }
 
 /// generates the moving player emoji   ////
@@ -232,14 +237,13 @@ function movePlayer() {
       clearInterval(moveInterval);
     }
     if ((player.emoji.x + dx > gameBoard.x -50) || (player.emoji.x + dx < 0)) {
-    dx = -dx;
+      dx = -dx;
     }
-    // if (player.emoji.y + dy < 10) {
-    //   closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
-      drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
-      // closestTileCoordinate(player.emoji.x, player.emoji.y);
-    // }
-    detectCollision();
+    if (player.emoji.y + dy < 10) {
+      closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
+    }
+  drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
+  detectCollision();
   }, 5);
 };
 
@@ -264,7 +268,7 @@ var detectCollision = function() {
       if (gameBoard.tiles[i][j].type >= 0) {
         if (distance < gameBoard.radius + player.emoji.radius) {
           clearInterval(moveInterval);
-          console.log("collision detected!");
+          console.log('collision detected!');
           console.log(player.emoji.x, player.emoji.y);
           console.log(gameBoard.tiles[i][j]);
           moving = false;
@@ -303,7 +307,7 @@ var closestTileCoordinate = function(x, y) {
 
 var snapTile = function(row, col) {
   if (gameBoard.tiles[row][col].type !== -1){
-    console.log("error snapping");
+    console.log('error snapping');
     gameBoard.tiles[row + 1][col].type = player.emoji.tiletype;
     gameBoard.tiles[row][col].radius = 20;
   }
@@ -358,7 +362,7 @@ var clusterFound = false;
 
 function foundMatch() {
   if (cluster.length >= 3) {
-    console.log("cluster found");
+    console.log('cluster found');
     clusterFound = true;
   }
 };
@@ -402,7 +406,7 @@ var findWin = function() {
         win = false;
       } else {
         win = true;
-        console.log("winner!");
+        console.log('winner!');
       }
     }
   }
@@ -415,7 +419,7 @@ var gameOver = function() {
   for (var i = 0; i < gameBoard.columns; i++){
     if (gameBoard.tiles[gameBoard.rows-1][i].type !== -1){
       lose = true;
-      console.log("game over")
+      console.log('game over')
     }
   }
 }
@@ -423,13 +427,13 @@ var gameOver = function() {
 /// draws the blue rectangle at the bottom of the playfield ///
 
 var drawScore = function() {
-  ctx.fillStyle = "black";
-  ctx.font = "20px serif";
-  ctx.fillText("Score: " + gameScore, 35, 600);
+  ctx.fillStyle = 'black';
+  ctx.font = '20px serif';
+  ctx.fillText('Score: ' + gameScore, 35, 600);
 }
 
 var drawGame = function() {
-  ctx.fillStyle="#003399";
+  ctx.fillStyle='#003399';
   ctx.fillRect(0,550,525,100);
 }
 
@@ -482,12 +486,12 @@ function clear() {
 var endGame = function(){
   if (lose === true) {
     clear();
-  ctx.fillStyle = "black";
-  ctx.font = "50px Comic Sans MS";
-  ctx.fillText("GAME OVER", 110, 200);
-  ctx.fillText("Score: " + gameScore, 110, 300);
-  ctx.font = "30px Comic Sans MS";
-  ctx.fillText("click anywhere to try again", 80, 400);
+  ctx.fillStyle = 'black';
+  ctx.font = '50px Comic Sans MS';
+  ctx.fillText('GAME OVER', 110, 200);
+  ctx.fillText('Score: ' + gameScore, 110, 300);
+  ctx.font = '30px Comic Sans MS';
+  ctx.fillText('click anywhere to try again', 80, 400);
   }
 };
 
@@ -496,12 +500,12 @@ var endGame = function(){
 var winGame = function(){
   if (win === true) {
     clear();
-  ctx.fillStyle = "black";
-  ctx.font = "50px Comic Sans MS";
-  ctx.fillText("YOU WIN!!!", 110, 200);
-  ctx.fillText("Score: " + gameScore, 110, 300);
-  ctx.font = "30px Comic Sans MS";
-  ctx.fillText("click anywhere to try again", 80, 400);
+  ctx.fillStyle = 'black';
+  ctx.font = '50px Comic Sans MS';
+  ctx.fillText('YOU WIN!!!', 110, 200);
+  ctx.fillText('Score: ' + gameScore, 110, 300);
+  ctx.font = '30px Comic Sans MS';
+  ctx.fillText('click anywhere to try again', 80, 400);
   }
 };
 
@@ -509,9 +513,10 @@ var winGame = function(){
 
 
                   ////////////////////
-                  //  SCRATCH PAD  ///
-               //// HERE BE PIRATES ////
+                  ///  SCRATCH PAD  ///
                   ////////////////////
+               //// HERE BE PIRATES ////
+                //////////////////////
 
 
 
