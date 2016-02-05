@@ -82,14 +82,15 @@ in order to determine relationships between neighboring bubbles we need to run e
 
 When setting out to build this game I had to look at the structure and dimensions of the playing field as well as the clustering nature of the emojis.  It was decided that the best approach was to have 13 fillable rows of ten emojis each, with 5 randomly generated emojis to fill the game board for the first 5 rows. Emoji's were chosen rather than generating bubbles of my own because they are already round, easily recognizable by both individual design and color, and because they are readily available as .png files with clear backgounds. An attempt was made to try to stay close to the source material of the game:
 
-![puzzleBobble]()
+![puzzleBobble](https://raw.githubusercontent.com/cameragadget/project1/master/assets/puzzle-bobble.jpg)
 
 
-![wireframe]()
+![wireframe](https://raw.githubusercontent.com/cameragadget/project1/master/assets/wireframe.JPG)
+(I don't get it, this photo is portrait in the raw on github)
 
 This game is more complicated that I originally envisioned it being.  I tried to hold as close to the game as possible by keeping as many of the original rules as possible.
 
-![wireframe2]()
+![wireframe2](https://raw.githubusercontent.com/cameragadget/project1/master/assets/wireframe2.JPG)
 
 ---
 
@@ -138,25 +139,16 @@ other future improvements include:
 * puzzle mode
 * a function that prevents player bubbles from being generated into pieces that are no longer present on the board.
 
+----
+User stories available on Trello at:
+
+<https://trello.com/b/SA9Qzu6V/project-1-bust-a-move>
 
 
 
+---
+---
+---
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-this process will be detailed in the following README as well as on Trello at: <https://trello.com/b/SA9Qzu6V/project-1-bust-a-move>
-
-##User Stories:
+![WDIrollercoaster](https://raw.githubusercontent.com/cameragadget/project1/master/assets/WDIrollercoaster.JPG)
 
