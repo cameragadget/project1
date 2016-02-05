@@ -234,11 +234,12 @@ function movePlayer() {
     if ((player.emoji.x + dx > gameBoard.x -50) || (player.emoji.x + dx < 0)) {
     dx = -dx;
     }
-    if (player.emoji.y + dy < 10) {
-      closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
-    };
-    drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
-    closestTileCoordinate(player.emoji.x, player.emoji.y);
+    // if (player.emoji.y + dy < 10) {
+    //   closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
+      drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
+      // closestTileCoordinate(player.emoji.x, player.emoji.y);
+    // }
+    detectCollision();
   }, 5);
 };
 
@@ -446,7 +447,7 @@ setInterval(function() {
     findWin();
   } else if (lose) {
     endGame();
-  }else if (win) {
+  } else if (win) {
     winGame()
   }
 }, 40);
