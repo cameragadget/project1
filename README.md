@@ -4,7 +4,7 @@
 ![Bust-e-moji](https://raw.githubusercontent.com/cameragadget/project1/gh-pages/assets/bustmoj.png)
 
 ###Or:
-###how I learned to stop worrying and love the math
+###how I learned to stop worrying and love the bugs
 
 ![strangelove](http://www.newyorker.com/wp-content/uploads/2014/01/dr-strangelove-still-580.jpg)
 

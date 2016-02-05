@@ -240,7 +240,7 @@ function movePlayer() {
       dx = -dx;
     }
     if (player.emoji.y + dy < 10) {
-      closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
+      closestTileCoordinate(player.emoji.x, player.emoji.y + 20);
     }
   drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
   detectCollision();
@@ -289,7 +289,7 @@ var closestTileCoordinate = function(x, y) {
     yToRow = 0;
   }
   if (yToRow % 2 === 0) {
-    xToCol = Math.round(((x+50)/50)-1);
+    xToCol = Math.round(((x+25)/50)-1);
   }   else {
     xToCol = Math.round(((x+25)/50)-1);
   }
