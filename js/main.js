@@ -18,6 +18,8 @@ var ctx = canvas.getContext('2d');
 ///     holds the dimensions of the canvas and the game board     ////
 ///   as well as tile information and the master array of tiles   ////
 ///     this area also holds global variables used by functions   ////
+var win = false;
+var lose = false;
 var moveInterval;
 var clusterFound;
 var gameScore = 0
@@ -122,14 +124,19 @@ canvas.addEventListener('mousemove', function(evt) {
     mouseAngle = 180 + (180 + mouseAngle);
   }
   player.angle = mouseAngle;
-  renderMouseAngle();
+  // renderMouseAngle();
 }, false);
 
 canvas.addEventListener('click', function() {
+  if (!lose){
   console.log("clicked");
   movePlayer();
   moving = true;
   clusterFound = false;
+  } else {
+    setUp();
+    lose = false;
+  }
 }, false);
 
 /// radians to degrees for mouse angle ///
@@ -225,6 +232,9 @@ function movePlayer() {
     }
     if ((player.emoji.x + dx > gameBoard.x -50) || (player.emoji.x + dx < 0)) {
     dx = -dx;
+    }
+    if (player.emoji.y + dy < 10) {
+      closestTileCoordinate(player.emoji.x, (player.emoji.y + 20));
     };
     drawPlayerEmoji(player.emoji.x += dx, player.emoji.y += dy);
     detectCollision();
@@ -278,7 +288,8 @@ var closestTileCoordinate = function(x, y) {
   snapTile(yToRow, xToCol);
   cluster.push(gameBoard.tiles[yToRow][xToCol]);
   findMatch(yToRow, xToCol);
-    setTimeout(function() {   eliminateCluster();
+    setTimeout(function() {
+      eliminateCluster();
     }, 100);
   return;
 };
@@ -309,13 +320,9 @@ function findMatch(trow, tcol) {
   // debugger
 
   if (gameBoard.tiles[trow][tcol].checked === false) {
-
-
     var touching = trow % 2 === 0 ? evenRowTouching : oddRowTouching;
     gameBoard.tiles[trow][tcol].checked = true;
     gameBoard.tiles[trow][tcol].matched = true;
-
-
     for (var k = 0; k < touching.length; k++) {
       var calcrow = trow + touching[k][0];
       var calccol = tcol + touching[k][1];
@@ -386,14 +393,14 @@ var cleanTile = function() {
 
                     /// find win state //
 
-var winner = false;
+
 var findWin = function() {
   for (var i = 0; i < gameBoard.columns; i++){
     for (var j = 0; j < gameBoard.rows; j++){
       if (gameBoard.tiles[i][j] !== -1) {
-        winner = false;
+        win = false;
       } else {
-        winner = true;
+        win = true;
         console.log("winner!");
       }
     }
@@ -402,7 +409,7 @@ var findWin = function() {
 
                   // find lose state //
 
-var lose = false
+
 var gameOver = function() {
   for (var i = 0; i < gameBoard.columns; i++){
     if (gameBoard.tiles[gameBoard.rows-1][i].type !== -1){
@@ -428,14 +435,20 @@ var drawGame = function() {
 ///// MAIN INTERVAL LOOP THAT RUNS THE GAME //////
 
 setInterval(function() {
-  clear();
-  drawGame();
-  drawScore()
-  drawTiles();
-  renderMouseAngle();
-  drawPlayerBall();
-  gameOver();
-  findWin();
+  if (!lose) {
+    clear();
+    drawGame();
+    drawScore()
+    drawTiles();
+    renderMouseAngle();
+    drawPlayerBall();
+    gameOver();
+    findWin();
+  } else if (lose) {
+    endGame();
+  }else if (win) {
+    winGame()
+  }
 }, 40);
 
 ///  MAIN SET UP FUNCTION  ///
@@ -461,8 +474,35 @@ function reUp() {
 
 function clear() {
   ctx.clearRect(0, 0, 525, 700);
-}
+};
 
+///  game over overlay  ///
+
+var endGame = function(){
+  if (lose === true) {
+    clear();
+  ctx.fillStyle = "black";
+  ctx.font = "50px Comic Sans MS";
+  ctx.fillText("GAME OVER", 110, 200);
+  ctx.fillText("Score: " + gameScore, 110, 300);
+  ctx.font = "30px Comic Sans MS";
+  ctx.fillText("click anywhere to try again", 80, 400);
+  }
+};
+
+/// win game overlay. nobody as ever seen this in the wild....///
+
+var winGame = function(){
+  if (win === true) {
+    clear();
+  ctx.fillStyle = "black";
+  ctx.font = "50px Comic Sans MS";
+  ctx.fillText("YOU WIN!!!", 110, 200);
+  ctx.fillText("Score: " + gameScore, 110, 300);
+  ctx.font = "30px Comic Sans MS";
+  ctx.fillText("click anywhere to try again", 80, 400);
+  }
+};
 
                   ////////////////////
                   ////SCRATCH PAD/////

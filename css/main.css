@@ -4,11 +4,20 @@ body {
   background-color: #99CCCC ;
 }
 
-canvas {
-  background-color: #9933CC;
+#title {
+  margin top: 0px;
+  margin-bottom: 0px;
+}
+
+.big-btn {
+  text-align: center;
+    width: 90px;
+    height: 30px;
 }
 
 canvas {
+  background-color: #9933CC;
   margin-top: 5px;
   border: 1px solid black;
+  cursor: none;
 }
