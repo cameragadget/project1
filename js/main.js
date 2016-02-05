@@ -383,6 +383,9 @@ function eliminateCluster() {
 /// resets tiles so they can be run though findMatch again ///
 
 var cleanTile = function() {
+
+  // debugger
+
   for (var i = 0; i < gameBoard.rows; i++){
     for (var j = 0; j < gameBoard.columns; j++){
       gameBoard.tiles[i][j].checked = false;
@@ -508,10 +511,53 @@ var winGame = function(){
                   ////SCRATCH PAD/////
                   ////////////////////
 
+// var hangers = []
+
+// var checkForHangers = function() {
+//   for (var i = 0; i < gameBoard.rows; i++){
+//     for (var k = 0; k < gameBoard.columns; k++){
+//       if (gameBoard.tiles[i][k].checked === true) {
+//         hangers.push(gameBoard.tiles[i][k]);
+//       }
+//     }
+//   }
+
+// }
+
 
 // somehow we need to be able to identify the array coodinates
 // of the playerBall even
 // even though we have incorporated it already
+
+// var toCheck= [];
+// var cluster = [];
+// var numberChecked = 0;
+
+// var findOutliers = function() {
+//   while(toCheck.length > 0) {
+//     for (var i = 0; i < toCheck.length; i++) {
+//       var touching = toCheck[i].row % 2 === 0 ? evenRowTouching : oddRowTouching;
+//         for (k = 0; k < touching.length; k++) {
+//           var calcrow = toCheck[i].row + touching[k][0];
+//           var calccol = toCheck[i].col + touching[k][1];
+//           var functile = gameBoard.tiles[calcrow][calccol];
+//             if (functile.checked !== true) {
+//             if ((calcrow < 13) && (calcrow > -1) && (calccol < 10) && (calccol > -1)){
+//               if ((functile.type === player.emoji.tiletype) && (functile.checked === false)) {
+//                 functile.matched = true;
+//                 functile.checked = true;
+//                 toCheck.push(functile);
+//                 numberChecked++;
+//                 cluster.push(toCheck[i]);
+//               } else {
+//                 functile.checked = true;
+//               }
+//             }
+//             }
+//         }
+//     }
+//   }
+// };
 
 // var toCheck= [];
 // var cluster = [];
