@@ -30,8 +30,8 @@ var gameBoard = {
   y: 650,
   rows: 13,
   columns: 10,
-  tilewidth: 50,
-  tileheight: 50,
+  tileWidth: 50,
+  tileHeight: 50,
   tiles: [],
   rowHeight: 42,
   radius: 20
@@ -68,20 +68,20 @@ var ballArray = [ball0, ball1, ball2, ball3, ball4];
 
 ///  generates random ball from array  ///
 
-var randomBall = ballArray[Math.floor(Math.random()*ballArray.length)];
+var randomBall = ballArray[Math.floor(Math.random() * ballArray.length)];
 
 // this function fills the gameBoard.tiles array ///
 //     with player pieces and blank tiles.       ///
 
 var makeGameBoard = function() {
-  for (var i=0; i < gameBoard.rows; i++) {
+  for (var i = 0; i < gameBoard.rows; i++) {
     gameBoard.tiles[i] = [];
       if (i < 5) {
-        for (var j=0; j < gameBoard.columns; j++) {
-          gameBoard.tiles[i][j] = new Tile(i, j, Math.floor(Math.random()*ballArray.length));
+        for (var j = 0; j < gameBoard.columns; j++) {
+          gameBoard.tiles[i][j] = new Tile(i, j, Math.floor(Math.random() * ballArray.length));
         };
       } else {
-        for (var j=0; j < gameBoard.columns; j++) {
+        for (var j = 0; j < gameBoard.columns; j++) {
           gameBoard.tiles[i][j] = new Tile(i, j, -1);
         };
       };
@@ -97,18 +97,18 @@ function drawTiles() {
   var width = 50;
   for (var i = 0; i < gameBoard.rows; i++) {
     if (i < 1) {
-      var yPos = (height*i);
+      var yPos = (height * i);
     } else {
-      yPos = (gameBoard.rowHeight*i);
+      yPos = (gameBoard.rowHeight * i);
     }
-    for(var j=0; j < 10; j++){
+    for(var j = 0; j < 10; j++){
       if (gameBoard.tiles[i][j].type !== -1) {
-        if (i%2 === 0) {
+        if (i % 2 === 0) {
           ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],
-          (width)*j, yPos, width, height);
+          (width) * j, yPos, width, height);
         } else {
           ctx.drawImage(ballArray[gameBoard.tiles[i][j].type],
-          ((width)*j)+(width/2), yPos, width, height);
+          ((width) * j) + (width / 2), yPos, width, height);
         }
       }
     }
@@ -122,8 +122,8 @@ function drawTiles() {
 canvas.addEventListener('mousemove', function(evt) {
   var mousePos = getMousePos(canvas, evt);
   console.log('Mouse position: ' + mousePos.x + ',' + mousePos.y);
-  var mouseAngle = radToDeg(Math.atan2((player.y+gameBoard.tileheight/2)
-      - mousePos.y, mousePos.x - (player.x+gameBoard.tilewidth/2)));
+  var mouseAngle = radToDeg(Math.atan2((player.y+gameBoard.tileHeight / 2)
+      - mousePos.y, mousePos.x - (player.x + gameBoard.tileWidth / 2)));
   if (mouseAngle < 0) {
     mouseAngle = 180 + (180 + mouseAngle);
   }
@@ -168,14 +168,14 @@ function degToRad(angle) {
 ///  rendering the mouse angle as a visible line  ///
 
 function renderMouseAngle() {
-  var centerx = player.x + gameBoard.tilewidth/2;
-  var centery = player.y + gameBoard.tileheight/2;
+  var centerx = player.x + gameBoard.tileWidth/2;
+  var centery = player.y + gameBoard.tileHeight/2;
   ctx.lineWidth = 4;
   ctx.strokeStyle = '#000000';
   ctx.beginPath();
   ctx.moveTo(centerx, centery);
-  ctx.lineTo(centerx + 1.5*gameBoard.tilewidth * Math.cos(degToRad(player.angle)),
-             centery - 1.5*gameBoard.tileheight * Math.sin(degToRad(player.angle)));
+  ctx.lineTo(centerx + 1.5 * gameBoard.tileWidth * Math.cos(degToRad(player.angle)),
+             centery - 1.5 * gameBoard.tileHeight * Math.sin(degToRad(player.angle)));
   ctx.stroke();
 }
 
@@ -201,18 +201,18 @@ var player = {
   /// assign player a ball type randomly ///
 
 var makePlayerBall = function() {
-  player.tiletype = Math.floor(Math.random()*ballArray.length);
-  player.x = (gameBoard.x/2)-gameBoard.tilewidth/2;
-  player.y = (580 - (gameBoard.tileheight/2));
+  player.tiletype = Math.floor(Math.random() * ballArray.length);
+  player.x = (gameBoard.x / 2)-gameBoard.tileWidth / 2;
+  player.y = (580 - (gameBoard.tileHeight/2));
 }
 
 /// draw that ball ///
 
 var drawPlayerBall = function() {
   ctx.drawImage(ballArray[player.tiletype],
-  (gameBoard.x/2)-gameBoard.tilewidth/2,
-  580 - (gameBoard.tileheight/2),
-  gameBoard.tilewidth, gameBoard.tileheight);
+  (gameBoard.x / 2)-gameBoard.tileWidth / 2,
+  580 - (gameBoard.tileHeight / 2),
+  gameBoard.tileWidth, gameBoard.tileHeight);
 }
 
 /// generates the moving player emoji   ////
@@ -223,7 +223,7 @@ var drawPlayerBall = function() {
 function movePlayer() {
   var drawPlayerEmoji = function(px, py) {
     ctx.drawImage(ballArray[player.emoji.tiletype], px , py,
-    gameBoard.tilewidth, gameBoard.tileheight);
+    gameBoard.tileWidth, gameBoard.tileHeight);
   }
   player.emoji.x = player.x;
   player.emoji.y = player.y;
@@ -231,12 +231,12 @@ function movePlayer() {
   player.emoji.tiletype = player.tiletype;
   player.emoji.speed = 1.2;
   var dx = player.emoji.speed * Math.cos(degToRad(player.emoji.angle));
-  var dy = player.emoji.speed * -1*Math.sin(degToRad(player.emoji.angle));
+  var dy = player.emoji.speed * -1 * Math.sin(degToRad(player.emoji.angle));
   moveInterval = setInterval(function() {
     if (!moving){
       clearInterval(moveInterval);
     }
-    if ((player.emoji.x + dx > gameBoard.x -50) || (player.emoji.x + dx < 0)) {
+    if ((player.emoji.x + dx > gameBoard.x - 50) || (player.emoji.x + dx < 0)) {
       dx = -dx;
     }
     if (player.emoji.y + dy < 10) {
@@ -256,10 +256,10 @@ var detectCollision = function() {
   for (var i = 0; i < gameBoard.rows; i++){
     for (var j = 0; j < gameBoard.columns; j++){
       if (i % 2 === 0) {
-        gameBoard.tiles[i][j].x = j * gameBoard.tilewidth + gameBoard.tilewidth/2;
+        gameBoard.tiles[i][j].x = j * gameBoard.tileWidth + gameBoard.tileWidth/2;
         gameBoard.tiles[i][j].y = i * gameBoard.rowHeight + gameBoard.rowHeight/2;
       } else {
-        gameBoard.tiles[i][j].x = j * gameBoard.tilewidth + gameBoard.tilewidth;
+        gameBoard.tiles[i][j].x = j * gameBoard.tileWidth + gameBoard.tileWidth;
         gameBoard.tiles[i][j].y = i * gameBoard.rowHeight + gameBoard.rowHeight/2;
       }
       var dx = gameBoard.tiles[i][j].x - player.emoji.x;
@@ -434,7 +434,7 @@ var drawScore = function() {
 
 var drawGame = function() {
   ctx.fillStyle='#003399';
-  ctx.fillRect(0,550,525,100);
+  ctx.fillRect(0, 550, 525, 100);
 }
 
 ///// MAIN INTERVAL LOOP THAT RUNS THE GAME //////
@@ -486,12 +486,12 @@ function clear() {
 var endGame = function(){
   if (lose === true) {
     clear();
-  ctx.fillStyle = 'black';
-  ctx.font = '50px Comic Sans MS';
-  ctx.fillText('GAME OVER', 110, 200);
-  ctx.fillText('Score: ' + gameScore, 110, 300);
-  ctx.font = '30px Comic Sans MS';
-  ctx.fillText('click anywhere to try again', 80, 400);
+    ctx.fillStyle = 'black';
+    ctx.font = '50px Comic Sans MS';
+    ctx.fillText('GAME OVER', 110, 200);
+    ctx.fillText('Score: ' + gameScore, 110, 300);
+    ctx.font = '30px Comic Sans MS';
+    ctx.fillText('click anywhere to try again', 80, 400);
   }
 };
 
@@ -500,12 +500,12 @@ var endGame = function(){
 var winGame = function(){
   if (win === true) {
     clear();
-  ctx.fillStyle = 'black';
-  ctx.font = '50px Comic Sans MS';
-  ctx.fillText('YOU WIN!!!', 110, 200);
-  ctx.fillText('Score: ' + gameScore, 110, 300);
-  ctx.font = '30px Comic Sans MS';
-  ctx.fillText('click anywhere to try again', 80, 400);
+    ctx.fillStyle = 'black';
+    ctx.font = '50px Comic Sans MS';
+    ctx.fillText('YOU WIN!!!', 110, 200);
+    ctx.fillText('Score: ' + gameScore, 110, 300);
+    ctx.font = '30px Comic Sans MS';
+    ctx.fillText('click anywhere to try again', 80, 400);
   }
 };
 
