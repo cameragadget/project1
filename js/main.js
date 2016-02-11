@@ -495,7 +495,7 @@ var endGame = function(){
   }
 };
 
-/// win game overlay. nobody as ever seen this in the wild....///
+/// win game overlay. nobody has ever seen this in the wild....///
 
 var winGame = function(){
   if (win === true) {
